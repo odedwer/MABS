@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from numpy import asarray
+
+from numpy import asarray, sort
 
 
 class BaseModel(ABC):
@@ -8,7 +9,7 @@ class BaseModel(ABC):
         self.N = machines.size
         self.K = num_to_choose
         self.T = num_trials
-        self.rewards = asarray(possible_rewards)
+        self.rewards = sort(asarray(possible_rewards))
         super().__init__()
 
     @abstractmethod
