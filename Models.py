@@ -99,13 +99,11 @@ class UCBEntropyNormalizedModel(BaseModel):
         self.machine_reward_counter = np.ones((self.N, self.rewards.size))
         self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
         self.estimated_machine_expectancy = self.estimated_machine_reward_distribution @ self.rewards
-        self.estimated_machine_expectancy /= np.max(self.estimated_machine_expectancy)
         self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
-        self.estimated_entropy /= np.max(self.estimated_entropy)
 
     def choose_machines(self) -> np.array:
         # choose K machines with largest UCB
-        return np.flip((self.estimated_machine_expectancy + self.estimated_entropy).argsort()[-self.K:])
+        return np.flip((self.estimated_machine_expectancy + self._get_entropy_estimation()).argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
         # update probabilities as simple frequency counters, where all counters are initialized at 1
@@ -122,3 +120,19 @@ class UCBEntropyNormalizedModel(BaseModel):
 
         self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
         self.estimated_entropy /= np.max(self.estimated_entropy)
+
+    def _get_entropy_estimation(self):
+        confidence = (2 * np.log(np.sum(self.estimated_entropy))) / self.estimated_entropy
+        confidence[(confidence == -np.inf) | (confidence == np.NaN) | (confidence < 0)] = 0
+        return confidence
+
+
+class RandomModel(BaseModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+
+    def choose_machines(self):
+        return np.random.choice(np.arange(self.N), self.K, False)
+
+    def update(self, chosen_machines, outcomes):
+        pass

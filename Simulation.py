@@ -49,7 +49,7 @@ class Simulation:
             self.model.update(chosen_machines, self.results[:, t, 0])
         return self.results.copy()
 
-    def plot_choice_distributions(self) -> plt.Figure:
+    def plot_choice_distributions(self, text_x=0.125, text_y=.9) -> plt.Figure:
         if np.sum(self.results) == 0:
             print("Simulation not run yet!\n "
                   "Please run the simulation (using run_simulation method) before plotting results", file=stderr)
@@ -67,5 +67,20 @@ class Simulation:
         ax.set_title(f"Machine choice by trial, {self.type}")
         ax.set_xlabel("Trial")
         ax.set_ylabel("Machine")
-        plt.figtext(0.125, .9, best_machines_text, horizontalalignment='left')
+        plt.figtext(text_x, text_y, best_machines_text, horizontalalignment='left')
         return fig
+
+    def get_convergence_rate(self, window_size=None):
+        if window_size:
+            convergence = np.zeros((self.results.shape[1] - window_size,))
+            for i in range(self.results.shape[1] - window_size):
+                convergence[i] = np.var(self.results[:, i:i + window_size, 1])
+            return convergence
+        else:
+            convergence = np.zeros((self.results.shape[1],))
+            for i in range(1, self.results.shape[1] + 1):
+                convergence[i - 1] = np.var(self.results[:, :i, 1])
+            return convergence
+
+    def get_reward_sum(self):
+        return np.cumsum(np.sum(self.results[:, :, 0], axis=0))

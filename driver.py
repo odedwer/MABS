@@ -1,36 +1,37 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
+import Visualization as vis
 from ModelFactory import ModelType
 from Simulation import Simulation
 
 N = 30
-K = 10
+K = 5
 T = 10000
-POSSIBLE_REWARDS = np.array([1, 2, 3, 4, 5])
+POSSIBLE_REWARDS = np.array([1, 3, 5, 10])
 
-get_reward_probabilities = lambda: np.random.dirichlet(np.flip(np.arange(1, len(POSSIBLE_REWARDS) + 1)))
+get_reward_probabilities = lambda: np.random.dirichlet(np.flip(1 + np.arange(len(POSSIBLE_REWARDS))))
 
 # %%
 
 SEED = 98  # same seeds
 np.random.seed(SEED)
-simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_ENTROPY)
+simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_ENTROPY)
 resEntropy = simEntropy.run_simulation()
-fig = simEntropy.plot_choice_distributions()
-fig.savefig('entropy Thompson Simulation.png')
+simEntropy.plot_choice_distributions()
+# fig.savefig('entropy Thompson Simulation.png')
 
 np.random.seed(SEED)
-simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_NORMAL)
+simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_NORMAL)
 resNormal = simNormal.run_simulation()
-fig = simNormal.plot_choice_distributions()
-fig.savefig('Normal Thompson Simulation.png')
+simNormal.plot_choice_distributions()
+# fig.savefig('Normal Thompson Simulation.png')
 
+np.random.seed(SEED)
+simBaseline = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.BASELINE_MODEL)
+resBaseline = simBaseline.run_simulation()
+simBaseline.plot_choice_distributions()
 # %%
-simEntropy.machine_indices_by_expectancy + 1
-# %%
-print(np.sum(resEntropy[:, :, 0]) / np.sum(resNormal[:, :, 0]))
-# %%
-# TODO random model - for baseline comparison
 # TODO qualitative evaluation over many seeds
 
 """
@@ -40,3 +41,28 @@ parameters for comparisons:
     3. ratio of end reward
     4. fisher rao - distance between estimated machine probabilities and actual probabilities
 """
+
+# %%
+window_size = 100
+sim_list = [simNormal, simEntropy, simBaseline]
+# %% plot convergence
+vis.plot_convergences(sim_list)
+
+# %% plot cumulative reward
+vis.plot_rewards(sim_list)
+
+# %% plot cumulative reward ratio
+vis.plot_reward_ratios(sim_list)
+
+# %% Fisher Rao
+
+distances = []
+uniform_distances = []
+plt.figure()
+for i, machine in enumerate(simEntropy.machine_list):
+    distances.append(
+        vis.fr_metric(machine.reward_probabilities, simEntropy.model.estimated_machine_reward_distribution[i, :]))
+    uniform_distances.append(
+        (vis.fr_metric(machine.reward_probabilities, np.ones((len(POSSIBLE_REWARDS),)) / len(POSSIBLE_REWARDS))))
+plt.hist(uniform_distances, alpha=0.5)
+plt.hist(distances, alpha=0.5)
