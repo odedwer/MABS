@@ -14,6 +14,9 @@ def plot_convergences(simulation_list, window_size=None) -> plt.Figure:
     for sim in simulation_list:
         ax.plot(sim.get_convergence_rate(window_size), ':', label=sim.type, linewidth=1)
     ax.legend()
+    ax.set_title("Convergence rate")
+    ax.set_xlabel(r"Trial")
+    ax.set_ylabel("Variance " + (f"(window size = {window_size})" if window_size else "(all available trials)"))
     return fig
 
 
@@ -28,6 +31,9 @@ def plot_rewards(simulation_list) -> plt.Figure:
     for sim in simulation_list:
         ax.plot(sim.get_reward_sum(), linestyle=":", label=sim.type)
     ax.legend()
+    ax.set_title("Cumulative Reward")
+    ax.set_xlabel(r"Trial")
+    ax.set_ylabel(r"Cumulative Reward")
     return fig
 
 
@@ -45,6 +51,9 @@ def plot_reward_ratios(simulation_list):
         ax.plot(rewards[indices[0]] / rewards[indices[1]], linestyle=":", linewidth=1,
                 label=f"{simulation_list[indices[0]].type}/{simulation_list[indices[1]].type}")
     ax.legend()
+    ax.set_title("Cumulative Reward Ratio")
+    ax.set_xlabel(r"Trial")
+    ax.set_ylabel(r"Cumulative Reward Ratio")
     return fig
 
 
@@ -69,3 +78,19 @@ def fr_metric(pk, qk):
     pk = pk / np.sum(pk)
     qk = qk / np.sum(qk)
     return np.arccos(np.sum(np.sqrt(pk) * np.sqrt(qk)))
+
+
+def plot_distance_of_distribution_estimations(sim_list):
+    fig = plt.figure()
+    ax = fig.subplots()
+    for sim in sim_list:
+        distances = np.zeros_like(sim.machine_list)
+        for i, machine in enumerate(sim.machine_list):
+            distances[i] = fr_metric(machine.reward_probabilities,
+                                     sim.model.estimated_machine_reward_distribution[i, :])
+        ax.hist(distances, label=sim.type, histtype='step', linestyle=":")
+    ax.set_title("Distance between estimated and real machine reward distributions")
+    ax.set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
+    ax.set_ylabel(r"# Occurences")
+    ax.legend()
+    return fig

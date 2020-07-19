@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 
 import Visualization as vis
@@ -55,14 +54,4 @@ vis.plot_rewards(sim_list)
 vis.plot_reward_ratios(sim_list)
 
 # %% Fisher Rao
-
-distances = []
-uniform_distances = []
-plt.figure()
-for i, machine in enumerate(simEntropy.machine_list):
-    distances.append(
-        vis.fr_metric(machine.reward_probabilities, simEntropy.model.estimated_machine_reward_distribution[i, :]))
-    uniform_distances.append(
-        (vis.fr_metric(machine.reward_probabilities, np.ones((len(POSSIBLE_REWARDS),)) / len(POSSIBLE_REWARDS))))
-plt.hist(uniform_distances, alpha=0.5)
-plt.hist(distances, alpha=0.5)
+vis.plot_distance_of_distribution_estimations(sim_list)
