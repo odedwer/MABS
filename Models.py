@@ -63,9 +63,18 @@ class ThompsonEntropyModel(ThompsonNormalModel):
 
     def choose_machines(self):
         estimated_reward_probabilities = self._vectorized_dirichlet_sample()
-        estimated_rewards = estimated_reward_probabilities @ self.rewards + entropy(estimated_reward_probabilities,
-                                                                                    axis=1)
+        estimated_rewards = estimated_reward_probabilities @ self.rewards
         return np.flip(estimated_rewards.argsort()[-self.K:])
+
+    def _vectorized_dirichlet_sample(self):
+        """
+        Generate samples from an array of reward counters per machine
+        from https://stackoverflow.com/questions/15915446/why-does-numpy-random-dirichlet-not-accept-multidimensional-arrays
+        """
+        r = np.random.standard_gamma(
+            self.machine_reward_counter * (
+                        1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
+        return r / r.sum(-1, keepdims=True)
 
 
 class UCBEntropyModel(BaseModel):

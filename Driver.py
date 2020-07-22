@@ -15,13 +15,13 @@ get_reward_probabilities = lambda: np.random.dirichlet(np.flip(1 + np.arange(len
 
 SEED = 98  # same seeds
 np.random.seed(SEED)
-simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_ENTROPY)
+simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_ENTROPY)
 resEntropy = simEntropy.run_simulation()
 simEntropy.plot_choice_distributions()
 # fig.savefig('entropy Thompson Simulation.png')
 
 np.random.seed(SEED)
-simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_NORMAL)
+simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_NORMAL)
 resNormal = simNormal.run_simulation()
 simNormal.plot_choice_distributions()
 # fig.savefig('Normal Thompson Simulation.png')
@@ -55,3 +55,4 @@ vis.plot_reward_ratios(sim_list)
 
 # %% Fisher Rao
 vis.plot_distance_of_distribution_estimations(sim_list)
+

@@ -33,6 +33,8 @@ class Simulation:
         self.model = getModel(model_type, self.machine_list, self.K, self.T, self.rewards)
         self.type = model_type.name
         self.results = np.zeros((self.K, self.T, 2))  # numChosenMachines X Trials X (reward, machine number)
+        self.real_expected_rewards = np.array(
+            [[self.machine_list[i].get_expectancy(), i + 1] for i in self.machine_indices_by_expectancy])
 
     def init_machines(self):
         """
