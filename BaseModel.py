@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+import numpy as np
 from numpy import asarray, sort
 
 
@@ -10,6 +11,8 @@ class BaseModel(ABC):
         self.K = num_to_choose
         self.T = num_trials
         self.rewards = sort(asarray(possible_rewards))
+        self.machine_reward_counter = np.ones((self.N, self.rewards.size))
+        self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
         super().__init__()
 
     @abstractmethod

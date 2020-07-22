@@ -26,6 +26,7 @@ class ModelType(Enum):
     UCB_ENTROPY_NORMALIZED = ConstructorWrapper(UCBEntropyNormalizedModel)
     THOMPSON_NORMAL = ConstructorWrapper(ThompsonNormalModel)
     THOMPSON_ENTROPY = ConstructorWrapper(ThompsonEntropyModel)
+    BASELINE_MODEL = ConstructorWrapper(RandomModel)
 
 
 def getModel(model_type, machines_list, K, T, rewards):
