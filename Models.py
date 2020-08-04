@@ -73,7 +73,7 @@ class ThompsonEntropyModel(ThompsonNormalModel):
         """
         r = np.random.standard_gamma(
             self.machine_reward_counter * (
-                        1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
+                    1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
         return r / r.sum(-1, keepdims=True)
 
 
@@ -82,8 +82,8 @@ class UCBEntropyModel(BaseModel):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.machine_reward_counter = np.ones((self.N, self.rewards.size))
         self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
-        self.estimated_machine_ucb = self.estimated_machine_reward_distribution @ self.rewards + entropy(
-            self.estimated_machine_reward_distribution, axis=1)
+        self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards) * (1. / entropy(
+            self.estimated_machine_reward_distribution, axis=1))
 
     def choose_machines(self) -> np.array:
         # choose K machines with largest UCB
@@ -104,8 +104,8 @@ class UCBEntropyModel(BaseModel):
         # add entropy for all chosen machines - the higher the entropy, the higher our uncertainty
         # so we are optimistic in the face of uncertainty
         self.estimated_machine_ucb[chosen_machines] = (self.estimated_machine_reward_distribution[chosen_machines, :] @
-                                                       self.rewards) + entropy(
-            self.estimated_machine_reward_distribution[chosen_machines, :], axis=1)
+                                                       self.rewards) * (1. / entropy(
+            self.estimated_machine_reward_distribution[chosen_machines, :], axis=1))
 
 
 class UCBEntropyNormalizedModel(BaseModel):
@@ -148,4 +148,6 @@ class RandomModel(BaseModel):
         return np.random.choice(np.arange(self.N), self.K, False)
 
     def update(self, chosen_machines, outcomes):
-        pass
+        self.machine_reward_counter[chosen_machines, np.searchsorted(self.rewards, outcomes)] += 1
+        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
+                                                                                          axis=1)[:,np.newaxis]

@@ -51,13 +51,13 @@ class Simulation:
             self.model.update(chosen_machines, self.results[:, t, 0])
         return self.results.copy()
 
-    def plot_choice_distributions(self, text_x=0.125, text_y=.9) -> plt.Figure:
+    def plot_choice_distributions(self, ax, text_x=0.125, text_y=None):
         if np.sum(self.results) == 0:
             print("Simulation not run yet!\n "
                   "Please run the simulation (using run_simulation method) before plotting results", file=stderr)
             return None
-        fig = plt.figure()
-        ax = fig.subplots()
+        if not text_y:
+            text_y = self.N * 1.1
         l = ax.plot(self.results[:, :, 1].T, 'o', markersize=2)
         ax.legend(l, [f"Machine {i}" for i in range(1, self.K + 1)])
         ax.set_yticks(np.arange(self.N))
@@ -69,8 +69,7 @@ class Simulation:
         ax.set_title(f"Machine choice by trial, {self.type}")
         ax.set_xlabel("Trial")
         ax.set_ylabel("Machine")
-        plt.figtext(text_x, text_y, best_machines_text, horizontalalignment='left')
-        return fig
+        ax.text(text_x, text_y, best_machines_text, horizontalalignment='left')
 
     def get_convergence_rate(self, window_size=None):
         if window_size:

@@ -88,7 +88,8 @@ def plot_distance_of_distribution_estimations(sim_list):
         for i, machine in enumerate(sim.machine_list):
             distances[i] = fr_metric(machine.reward_probabilities,
                                      sim.model.estimated_machine_reward_distribution[i, :])
-        ax.hist(distances, label=sim.type, histtype='step', linestyle=":")
+        ax.hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=20)
+    ax.set_xlim(0, 1)
     ax.set_title("Distance between estimated and real machine reward distributions")
     ax.set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
     ax.set_ylabel(r"# Occurences")
