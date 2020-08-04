@@ -18,11 +18,12 @@ class ModelType(Enum):
     IN_ALGORITHMS_LAMBDA = None
     IN_ALGORITHMS_UBC_BASED_THOMPSON = None
     IN_ALGORITHMS_STOCHASTIC = None
-    BETA_LAMBDA = None
-    BETA_UBC_BASED_THOMPSON = None
-    BETA_STOCHASTIC = None
+    BETA_LAMBDA = None  # (lmbda*UCB + (1-lmbda)TS)beta + (1-beta)entropy
+    BETA_UBC_BASED_THOMPSON = None  #
+    BETA_STOCHASTIC = None  #
     UCB_NORMAL = ConstructorWrapper(UCBNormalModel)
     UCB_ENTROPY = ConstructorWrapper(UCBEntropyModel)
+    UCB_ENTROPY_GAIN = ConstructorWrapper(UCBEntropyGainModel)
     UCB_ENTROPY_NORMALIZED = ConstructorWrapper(UCBEntropyNormalizedModel)
     THOMPSON_NORMAL = ConstructorWrapper(ThompsonNormalModel)
     THOMPSON_ENTROPY = ConstructorWrapper(ThompsonEntropyModel)
