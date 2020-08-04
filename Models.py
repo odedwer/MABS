@@ -70,8 +70,7 @@ class ThompsonEntropyModel(ThompsonNormalModel):
         from https://stackoverflow.com/questions/15915446/why-does-numpy-random-dirichlet-not-accept-multidimensional-arrays
         """
         r = np.random.standard_gamma(
-            self.machine_reward_counter * (
-                    1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
+            self.machine_reward_counter / -np.log(self._get_estimated_entropy())[:, np.newaxis])
         return r / r.sum(-1, keepdims=True)
 
 
@@ -162,7 +161,6 @@ class UCBEntropyGainModel(BaseModel):
     def choose_machines(self) -> np.array:
         # choose K machines with largest UCB
         entropy_gain = self._get_estimated_entropy()
-        print(-np.log(entropy_gain))
         return np.flip((self.estimated_machine_ucb / (-np.log(entropy_gain))).argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
