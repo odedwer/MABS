@@ -19,12 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="fixed convergence visualization, added entropy gain">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaseModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +86,7 @@
       <option name="presentableId" value="Default" />
       <updated>1595482153118</updated>
       <workItem from="1595482154412" duration="5078000" />
-      <workItem from="1596557800885" duration="10427000" />
+      <workItem from="1596557800885" duration="12077000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -104,7 +102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596564626089</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better">
+      <created>1596568593003</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1596568593003</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,7 +130,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="not sure what is the difference" />
     <MESSAGE value="fixed convergence visualization, added entropy gain" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed convergence visualization, added entropy gain" />
+    <MESSAGE value="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better" />
   </component>
   <component name="WindowStateProjectService">
     <state x="782" y="312" width="424" height="496" key="FileChooserDialogImpl" timestamp="1595482151596">
