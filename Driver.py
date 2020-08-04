@@ -4,32 +4,33 @@ import Visualization as vis
 from ModelFactory import ModelType
 from Simulation import Simulation
 import matplotlib.pyplot as plt
-#%%
-N = 2
-K = 1
-T = 10000
-POSSIBLE_REWARDS = np.array([0,1])
+
+# %%
+N = 10
+K = 3
+T = 1000
+POSSIBLE_REWARDS = np.array([1, 2, 3])
 
 get_reward_probabilities = lambda: np.random.dirichlet(np.flip(1 + np.arange(len(POSSIBLE_REWARDS))))
 
-fig = plt.figure(figsize=(24,8))
+fig = plt.figure(figsize=(24, 8))
 entropy_ax, normal_ax, baseline_ax = fig.subplots(1, 3)
 SEED = 98  # same seeds
 np.random.seed(SEED)
-simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_ENTROPY)
+simEntropy = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_ENTROPY_GAIN)
 resEntropy = simEntropy.run_simulation()
 simEntropy.plot_choice_distributions(entropy_ax)
 
 np.random.seed(SEED)
-simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.THOMPSON_NORMAL)
+simNormal = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_NORMAL)
 resNormal = simNormal.run_simulation()
 simNormal.plot_choice_distributions(normal_ax)
 
 np.random.seed(SEED)
-simBaseline = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.BASELINE_MODEL)
+simBaseline = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.UCB_ENTROPY)
 resBaseline = simBaseline.run_simulation()
 simBaseline.plot_choice_distributions(baseline_ax)
-#%%
+# %%
 model_name = "UCB"
 fig.savefig("%s choices comparison.png" % model_name)
 # %%
@@ -47,7 +48,7 @@ parameters for comparisons:
 window_size = 100
 sim_list = [simNormal, simEntropy, simBaseline]
 # %% plot convergence
-fig = vis.plot_convergences(sim_list)
+fig = vis.plot_convergences(sim_list,window_size)
 # fig.savefig("%s convergence rate.png" % model_name)
 # %% plot cumulative reward
 fig = vis.plot_rewards(sim_list)

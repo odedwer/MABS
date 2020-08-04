@@ -15,12 +15,10 @@ class UCBNormalModel(BaseModel):
         return np.flip(self.estimated_machine_ucb.argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
-        self.num_of_plays = 0
-        for machine in self.machines:
-            self.num_of_plays += machine.num_of_plays
-        for machine_index in range(self.N):
+        self.num_of_plays += self.K
+        for machine_index, machine in enumerate(self.machines):
             # update UCB of all machines
-            self.estimated_machine_ucb[machine_index] = self._get_ucb(self.machines[machine_index])
+            self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
         outcome_indices = np.searchsorted(self.rewards, outcomes)
         self.machine_reward_counter[chosen_machines, outcome_indices] += 1
         self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
@@ -150,4 +148,46 @@ class RandomModel(BaseModel):
     def update(self, chosen_machines, outcomes):
         self.machine_reward_counter[chosen_machines, np.searchsorted(self.rewards, outcomes)] += 1
         self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:,np.newaxis]
+                                                                                          axis=1)[:, np.newaxis]
+
+
+class UCBEntropyGainModel(BaseModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+        self.machine_reward_counter = np.ones((self.N, self.rewards.size))
+        self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
+        self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards)
+        self.num_of_plays = 0
+
+    def choose_machines(self) -> np.array:
+        # choose K machines with largest UCB
+        R = self.rewards.size
+        reward_counters_for_entropy = np.repeat(self.machine_reward_counter, R, 1).reshape((self.N, R, R), order='F')
+        reward_counters_for_entropy[:, np.arange(R), np.arange(R)] += 1
+        ent = entropy(reward_counters_for_entropy, axis=2)
+        estimated_entropy = np.sum(self.estimated_machine_reward_distribution * ent, axis=1)
+        entropy_gain = estimated_entropy - entropy(self.estimated_machine_reward_distribution, axis=1)
+        return np.flip((self.estimated_machine_ucb + entropy_gain).argsort()[-self.K:])
+
+    def update(self, chosen_machines, outcomes):
+        # update probabilities as simple frequency counters, where all counters are initialized at 1
+        # basically - this is the mode of the Dirichlet conjugate prior
+        self.num_of_plays += self.K
+        for machine_index, machine in enumerate(self.machines):
+            # update UCB of all machines
+            self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
+        outcome_indices = np.searchsorted(self.rewards,
+                                          outcomes)  # find the indices of the outcomes in the reward array
+        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
+        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
+                                                                                          axis=1)[:, np.newaxis]
+        # update mean reward of every chosen machine
+        for machine_index in chosen_machines:
+            self.estimated_machine_ucb[machine_index] = self.machines[machine_index].get_mean_reward() + self._get_ucb(
+                self.machines[machine_index])
+
+    def _get_ucb(self, machine):
+        confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays
+        if confidence == -np.inf or confidence == np.NaN or confidence < 0:  # in case of division by 0
+            confidence = 0
+        return machine.get_mean_reward() + confidence

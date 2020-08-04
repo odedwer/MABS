@@ -72,15 +72,16 @@ class Simulation:
         ax.text(text_x, text_y, best_machines_text, horizontalalignment='left')
 
     def get_convergence_rate(self, window_size=None):
+        machine_switches = np.diff(self.results[:, :, 1], axis=1) != 0
         if window_size:
-            convergence = np.zeros((self.results.shape[1] - window_size,))
-            for i in range(self.results.shape[1] - window_size):
-                convergence[i] = np.var(self.results[:, i:i + window_size, 1])
+            convergence = np.zeros((machine_switches.shape[1] - window_size,))
+            for i in range(machine_switches.shape[1] - window_size):
+                convergence[i] = np.mean(machine_switches[:, i:i + window_size])
             return convergence
         else:
-            convergence = np.zeros((self.results.shape[1],))
-            for i in range(1, self.results.shape[1] + 1):
-                convergence[i - 1] = np.var(self.results[:, :i, 1])
+            convergence = np.zeros((machine_switches.shape[1],))
+            for i in range(1, machine_switches.shape[1] + 1):
+                convergence[i - 1] = np.mean(machine_switches[:, :i])
             return convergence
 
     def get_reward_sum(self):
