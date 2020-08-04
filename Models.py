@@ -161,13 +161,9 @@ class UCBEntropyGainModel(BaseModel):
 
     def choose_machines(self) -> np.array:
         # choose K machines with largest UCB
-        R = self.rewards.size
-        reward_counters_for_entropy = np.repeat(self.machine_reward_counter, R, 1).reshape((self.N, R, R), order='F')
-        reward_counters_for_entropy[:, np.arange(R), np.arange(R)] += 1
-        ent = entropy(reward_counters_for_entropy, axis=2)
-        estimated_entropy = np.sum(self.estimated_machine_reward_distribution * ent, axis=1)
-        entropy_gain = estimated_entropy - entropy(self.estimated_machine_reward_distribution, axis=1)
-        return np.flip((self.estimated_machine_ucb + entropy_gain).argsort()[-self.K:])
+        entropy_gain = self._get_estimated_entropy()
+        print(-np.log(entropy_gain))
+        return np.flip((self.estimated_machine_ucb / (-np.log(entropy_gain))).argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
         # update probabilities as simple frequency counters, where all counters are initialized at 1
@@ -183,8 +179,7 @@ class UCBEntropyGainModel(BaseModel):
                                                                                           axis=1)[:, np.newaxis]
         # update mean reward of every chosen machine
         for machine_index in chosen_machines:
-            self.estimated_machine_ucb[machine_index] = self.machines[machine_index].get_mean_reward() + self._get_ucb(
-                self.machines[machine_index])
+            self.estimated_machine_ucb[machine_index] = self._get_ucb(self.machines[machine_index])
 
     def _get_ucb(self, machine):
         confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays

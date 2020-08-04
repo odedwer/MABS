@@ -82,16 +82,23 @@ def fr_metric(pk, qk):
 
 def plot_distance_of_distribution_estimations(sim_list):
     fig = plt.figure()
-    ax = fig.subplots()
-    for sim in sim_list:
+    nrow = int(np.floor(np.sqrt(len(sim_list))))
+    ncol = int(np.ceil(len(sim_list) / nrow))
+    axs = fig.subplots(nrow, ncol)
+    if not np.iterable(axs):
+        axs = [axs]
+    else:
+        axs = axs.ravel()
+    for j, sim in enumerate(sim_list):
         distances = np.zeros_like(sim.machine_list)
         for i, machine in enumerate(sim.machine_list):
             distances[i] = fr_metric(machine.reward_probabilities,
                                      sim.model.estimated_machine_reward_distribution[i, :])
-        ax.hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=20)
-    ax.set_xlim(0, 1)
-    ax.set_title("Distance between estimated and real machine reward distributions")
-    ax.set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
-    ax.set_ylabel(r"# Occurences")
-    ax.legend()
+        axs[j].hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=np.arange(0, 1.05, 0.05))
+        axs[j].set_xlim(0, 1)
+        axs[j].set_title(sim.type)
+        axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
+        axs[j].set_ylabel(r"# Occurences")
+        axs[j].legend()
+    fig.suptitle("Distance between estimated and real machine reward distributions")
     return fig
