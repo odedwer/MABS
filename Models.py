@@ -10,9 +10,9 @@ class UCBNormalModel(BaseModel):
         self.estimated_machine_ucb = np.zeros((self.N,))
         self.num_of_plays = 0
 
-    def choose_machines(self) -> np.array:
+    def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
-        return np.flip(self.estimated_machine_ucb.argsort()[-self.K:])
+        return self.estimated_machine_ucb if get_estimates else np.flip(self.estimated_machine_ucb.argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
         self.num_of_plays = 0
@@ -37,10 +37,11 @@ class ThompsonNormalModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
-    def choose_machines(self):
+    def choose_machines(self, get_estimates=False):
         estimated_reward_probabilities = self._vectorized_dirichlet_sample()
         estimated_rewards = estimated_reward_probabilities @ self.rewards
-        return np.flip(estimated_rewards.argsort()[-self.K:])
+        return estimated_rewards if get_estimates else np.flip(
+            estimated_rewards.argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
         outcome_indices = np.searchsorted(self.rewards, outcomes)
@@ -61,7 +62,7 @@ class ThompsonEntropyModel(ThompsonNormalModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
-    def choose_machines(self):
+    def choose_machines(self, get_estimates=False):
         estimated_reward_probabilities = self._vectorized_dirichlet_sample()
         estimated_rewards = estimated_reward_probabilities @ self.rewards
         return np.flip(estimated_rewards.argsort()[-self.K:])
@@ -73,7 +74,7 @@ class ThompsonEntropyModel(ThompsonNormalModel):
         """
         r = np.random.standard_gamma(
             self.machine_reward_counter * (
-                        1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
+                    1. / entropy(self.estimated_machine_reward_distribution, axis=1)[:, np.newaxis]))
         return r / r.sum(-1, keepdims=True)
 
 
@@ -85,7 +86,7 @@ class UCBEntropyModel(BaseModel):
         self.estimated_machine_ucb = self.estimated_machine_reward_distribution @ self.rewards + entropy(
             self.estimated_machine_reward_distribution, axis=1)
 
-    def choose_machines(self) -> np.array:
+    def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         return np.flip(self.estimated_machine_ucb.argsort()[-self.K:])
 
@@ -113,8 +114,9 @@ class UCBEntropyNormalizedModel(BaseModel):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.estimated_machine_expectancy = self.estimated_machine_reward_distribution @ self.rewards
         self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
+        self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
 
-    def choose_machines(self) -> np.array:
+    def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         return np.flip((self.estimated_machine_expectancy + self._get_entropy_estimation()).argsort()[-self.K:])
 
@@ -140,11 +142,46 @@ class UCBEntropyNormalizedModel(BaseModel):
         return confidence
 
 
+class LambdaModel(BaseModel):
+
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+        self.thompson = ThompsonNormalModel(machines, num_to_choose, num_trials, possible_rewards)
+        self.ucb = UCBNormalModel(machines, num_to_choose, num_trials, possible_rewards)
+        self.lambda_handle = lambda_handle
+        self.joint_estimates = np.zeros((self.N,))
+
+    def choose_machines(self, get_estimates=False):
+        thompson_estimates = self.thompson.choose_machines(True)
+        ucb_estimates = self.ucb.choose_machines(True)
+        self.joint_estimates = thompson_estimates * self.lambda_handle + ucb_estimates * (1 - self.lambda_handle)
+        return self.joint_estimates if get_estimates else np.flip(self.joint_estimates.argsort()[-self.K:])
+
+    def update(self, chosen_machines, outcomes):
+        self.thompson.update(chosen_machines, outcomes)
+        self.ucb.update(chosen_machines, outcomes)
+
+
+class LambdaBetaModel(LambdaModel):
+
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float, beta_handle: float):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle)
+        self.beta_handle = beta_handle
+
+    def choose_machines(self, get_estimates=False):
+        lambda_estimates = super().choose_machines(True)
+        return np.flip((lambda_estimates * self.beta_handle * self._get_estimated_entropy()).argsort()[-self.K:])
+
+
+    def update(self, chosen_machines, outcomes):
+        super().update(chosen_machines, outcomes)
+
+
 class RandomModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
-    def choose_machines(self):
+    def choose_machines(self, get_estimates=False):
         return np.random.choice(np.arange(self.N), self.K, False)
 
     def update(self, chosen_machines, outcomes):

@@ -16,7 +16,7 @@ class BaseModel(ABC):
         super().__init__()
 
     @abstractmethod
-    def choose_machines(self):
+    def choose_machines(self, get_estimates):
         pass
 
     @abstractmethod
