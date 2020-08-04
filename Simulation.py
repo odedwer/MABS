@@ -9,7 +9,7 @@ from ModelFactory import getModel
 
 class Simulation:
     def __init__(self, num_machines: int, num_to_choose: int, num_trials: int, possible_rewards,
-                 reward_probability_function, model_type):
+                 reward_probability_function, model_type, **kwargs):
         """
         Constructor for simulation class
         :param num_machines: number of overall machines in the simulation (N)
@@ -30,7 +30,7 @@ class Simulation:
         self.machine_indices_by_expectancy = np.asarray(
             [machine.get_expectancy() for machine in self.machine_list])  # ordered from highest to lowest
         self.machine_indices_by_expectancy = np.flip(np.argsort(self.machine_indices_by_expectancy))
-        self.model = getModel(model_type, self.machine_list, self.K, self.T, self.rewards)
+        self.model = model_type.value(self.machine_list, self.K, self.T, self.rewards, **kwargs)
         self.type = model_type.name
         self.results = np.zeros((self.K, self.T, 2))  # numChosenMachines X Trials X (reward, machine number)
         self.real_expected_rewards = np.array(

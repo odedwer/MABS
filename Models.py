@@ -162,14 +162,15 @@ class LambdaModel(BaseModel):
 
 class LambdaBetaModel(LambdaModel):
 
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float, beta_handle: float):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
+                 beta_handle: float):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle)
         self.beta_handle = beta_handle
 
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
-        return np.flip((lambda_estimates * self.beta_handle * self._get_estimated_entropy()).argsort()[-self.K:])
-
+        return np.flip(
+            (lambda_estimates / (-np.log(self.beta_handle * self._get_estimated_entropy()))).argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
         super().update(chosen_machines, outcomes)
@@ -196,7 +197,7 @@ class UCBEntropyGainModel(BaseModel):
         self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards)
         self.num_of_plays = 0
 
-    def choose_machines(self) -> np.array:
+    def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         entropy_gain = self._get_estimated_entropy()
         return np.flip((self.estimated_machine_ucb / (-np.log(entropy_gain))).argsort()[-self.K:])
