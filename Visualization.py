@@ -14,7 +14,7 @@ def plot_convergences(simulation_list, window_size=None) -> plt.Figure:
     for sim in simulation_list:
         ax.plot(sim.get_convergence_rate(window_size), ':', label=sim.type, linewidth=1)
     ax.legend()
-    ax.set_title("Convergence rate")
+    ax.set_title("Machine switch rate")
     ax.set_xlabel(r"Trial")
     ax.set_ylabel("Variance " + (f"(window size = {window_size})" if window_size else "(all available trials)"))
     return fig
@@ -94,7 +94,7 @@ def plot_distance_of_distribution_estimations(sim_list):
         for i, machine in enumerate(sim.machine_list):
             distances[i] = fr_metric(machine.reward_probabilities,
                                      sim.model.estimated_machine_reward_distribution[i, :])
-        axs[j].hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=np.arange(0, 1.05, 0.05))
+        axs[j].hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=np.arange(0, 1.025, 0.025))
         axs[j].set_xlim(0, 1)
         axs[j].set_title(sim.type)
         axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")

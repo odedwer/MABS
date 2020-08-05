@@ -5,10 +5,15 @@ from BaseModel import BaseModel
 
 
 class UCBNormalModel(BaseModel):
+
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.estimated_machine_ucb = np.zeros((self.N,))
         self.num_of_plays = 0
+
+    @property
+    def model_name(self):
+        return "UCB1"
 
     def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
@@ -19,10 +24,7 @@ class UCBNormalModel(BaseModel):
         for machine_index, machine in enumerate(self.machines):
             # update UCB of all machines
             self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
-        outcome_indices = np.searchsorted(self.rewards, outcomes)
-        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
+        super().update(chosen_machines, outcomes)
 
     def _get_ucb(self, machine):
         confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays
@@ -35,17 +37,15 @@ class ThompsonNormalModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
+    @property
+    def model_name(self):
+        return "Thompson Sampling"
+
     def choose_machines(self, get_estimates=False):
         estimated_reward_probabilities = self._vectorized_dirichlet_sample()
         estimated_rewards = estimated_reward_probabilities @ self.rewards
         return estimated_rewards if get_estimates else np.flip(
             estimated_rewards.argsort()[-self.K:])
-
-    def update(self, chosen_machines, outcomes):
-        outcome_indices = np.searchsorted(self.rewards, outcomes)
-        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
 
     def _vectorized_dirichlet_sample(self):
         """
@@ -60,6 +60,10 @@ class ThompsonEntropyModel(ThompsonNormalModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
+    @property
+    def model_name(self):
+        return "Entropy Driven Thompson Sampling"
+
     def choose_machines(self, get_estimates=False):
         estimated_reward_probabilities = self._vectorized_dirichlet_sample()
         estimated_rewards = estimated_reward_probabilities @ self.rewards
@@ -71,7 +75,6 @@ class ThompsonEntropyModel(ThompsonNormalModel):
         from https://stackoverflow.com/questions/15915446/why-does-numpy-random-dirichlet-not-accept-multidimensional-arrays
         """
         r = np.random.standard_gamma(
-
             self.machine_reward_counter / -np.log(self._get_estimated_entropy())[:, np.newaxis])
         return r / r.sum(-1, keepdims=True)
 
@@ -84,6 +87,10 @@ class UCBEntropyModel(BaseModel):
         self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards) * (1. / entropy(
             self.estimated_machine_reward_distribution, axis=1))
 
+    @property
+    def model_name(self):
+        return "Entropy Driven UCB1"
+
     def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         return np.flip(self.estimated_machine_ucb.argsort()[-self.K:])
@@ -91,11 +98,7 @@ class UCBEntropyModel(BaseModel):
     def update(self, chosen_machines, outcomes):
         # update probabilities as simple frequency counters, where all counters are initialized at 1
         # basically - this is the mode of the Dirichlet conjugate prior
-        outcome_indices = np.searchsorted(self.rewards,
-                                          outcomes)  # find the indices of the outcomes in the reward array
-        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
+        super().update(chosen_machines, outcomes)
         # update mean reward of every chosen machine
         for machine_index in chosen_machines:
             self.estimated_machine_ucb[machine_index] = self.machines[machine_index].get_mean_reward()
@@ -114,6 +117,10 @@ class UCBEntropyNormalizedModel(BaseModel):
         self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
         self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
 
+    @property
+    def model_name(self):
+        return "Normalized Entropy Driven UCB1"
+
     def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         return np.flip((self.estimated_machine_expectancy + self._get_entropy_estimation()).argsort()[-self.K:])
@@ -122,11 +129,7 @@ class UCBEntropyNormalizedModel(BaseModel):
         # update probabilities as simple frequency counters, where all counters are initialized at 1
         # basically - this is the mode of the Dirichlet conjugate prior
 
-        # find the indices of the outcomes in the reward array
-        outcome_indices = np.searchsorted(self.rewards, outcomes)
-        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
+        super().update(chosen_machines, outcomes)
         for machine_index in range(self.N):
             self.estimated_machine_expectancy[machine_index] = self.machines[machine_index].get_mean_reward()
         self.estimated_machine_expectancy /= np.max(self.estimated_machine_expectancy)
@@ -141,13 +144,16 @@ class UCBEntropyNormalizedModel(BaseModel):
 
 
 class LambdaModel(BaseModel):
-
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.thompson = ThompsonNormalModel(machines, num_to_choose, num_trials, possible_rewards)
         self.ucb = UCBNormalModel(machines, num_to_choose, num_trials, possible_rewards)
         self.lambda_handle = lambda_handle
         self.joint_estimates = np.zeros((self.N,))
+
+    @property
+    def model_name(self):
+        return r"TS & UCB1, $\lambda=%.2f$" % self.lambda_handle
 
     def choose_machines(self, get_estimates=False):
         thompson_estimates = self.thompson.choose_machines(True)
@@ -156,6 +162,7 @@ class LambdaModel(BaseModel):
         return self.joint_estimates if get_estimates else np.flip(self.joint_estimates.argsort()[-self.K:])
 
     def update(self, chosen_machines, outcomes):
+        super().update(chosen_machines, outcomes)
         self.thompson.update(chosen_machines, outcomes)
         self.ucb.update(chosen_machines, outcomes)
 
@@ -167,10 +174,15 @@ class LambdaBetaModel(LambdaModel):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle)
         self.beta_handle = beta_handle
 
+    @property
+    def model_name(self):
+        return r"TS, UCB1 & Entropy, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
+
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
         return np.flip(
-            (lambda_estimates / (-np.log(self.beta_handle * self._get_estimated_entropy()))).argsort()[-self.K:])
+            (lambda_estimates / (-np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy()))).argsort()[
+            -self.K:])
 
     def update(self, chosen_machines, outcomes):
         super().update(chosen_machines, outcomes)
@@ -180,13 +192,12 @@ class RandomModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
 
+    @property
+    def model_name(self):
+        return "Baseline (random)"
+
     def choose_machines(self, get_estimates=False):
         return np.random.choice(np.arange(self.N), self.K, False)
-
-    def update(self, chosen_machines, outcomes):
-        self.machine_reward_counter[chosen_machines, np.searchsorted(self.rewards, outcomes)] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
 
 
 class UCBEntropyGainModel(BaseModel):
@@ -197,6 +208,10 @@ class UCBEntropyGainModel(BaseModel):
         self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards)
         self.num_of_plays = 0
 
+    @property
+    def model_name(self):
+        return "Entropy Gain Driven UCB1"
+
     def choose_machines(self, get_estimates=False) -> np.array:
         # choose K machines with largest UCB
         entropy_gain = self._get_estimated_entropy()
@@ -205,18 +220,11 @@ class UCBEntropyGainModel(BaseModel):
     def update(self, chosen_machines, outcomes):
         # update probabilities as simple frequency counters, where all counters are initialized at 1
         # basically - this is the mode of the Dirichlet conjugate prior
+        super().update(chosen_machines, outcomes)
         self.num_of_plays += self.K
         for machine_index, machine in enumerate(self.machines):
             # update UCB of all machines
             self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
-        outcome_indices = np.searchsorted(self.rewards,
-                                          outcomes)  # find the indices of the outcomes in the reward array
-        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
-                                                                                          axis=1)[:, np.newaxis]
-        # update mean reward of every chosen machine
-        for machine_index in chosen_machines:
-            self.estimated_machine_ucb[machine_index] = self._get_ucb(self.machines[machine_index])
 
     def _get_ucb(self, machine):
         confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays
