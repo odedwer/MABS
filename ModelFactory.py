@@ -18,17 +18,26 @@ class ModelType(Enum):
     IN_ALGORITHMS_LAMBDA = None
     IN_ALGORITHMS_UBC_BASED_THOMPSON = None
     IN_ALGORITHMS_STOCHASTIC = None
-    LAMBDA_BETA = ConstructorWrapper(LambdaBetaModel)  # (lmbda*UCB + (1-lmbda)TS)beta + (1-beta)entropy
+
     LAMBDA = ConstructorWrapper(LambdaModel)
-    BETA_UBC_BASED_THOMPSON = None  #
-    BETA_STOCHASTIC = None  #
+    LAMBDA_BETA = ConstructorWrapper(LambdaBetaModel)
+
+    UCB_BASED_THOMPSON = ConstructorWrapper(UCBBasedThompsonModel)
+    BETA_UBC_BASED_THOMPSON = ConstructorWrapper(UCBBasedThompsonBetaModel)
+
+    STOCHASTIC = ConstructorWrapper(StochasticThompsonUCBModel)
+    BETA_STOCHASTIC = ConstructorWrapper(StochasticThompsonUCBBetaModel)
+
     UCB_NORMAL = ConstructorWrapper(UCBNormalModel)
     UCB_ENTROPY = ConstructorWrapper(UCBEntropyModel)
     UCB_ENTROPY_GAIN = ConstructorWrapper(UCBEntropyGainModel)
     UCB_ENTROPY_NORMALIZED = ConstructorWrapper(UCBEntropyNormalizedModel)
+
     THOMPSON_NORMAL = ConstructorWrapper(ThompsonNormalModel)
     THOMPSON_ENTROPY = ConstructorWrapper(ThompsonEntropyModel)
+
     BASELINE_MODEL = ConstructorWrapper(RandomModel)
+    ENTROPY_GAIN_MODEL = ConstructorWrapper(EntropyGainModel)
 
 
 def getModel(model_type, machines_list, K, T, rewards):

@@ -39,3 +39,6 @@ class BaseModel(ABC):
         estimated_entropy = np.sum(self.estimated_machine_reward_distribution * ent, axis=1)
         entropy_gain = entropy(self.estimated_machine_reward_distribution, axis=1) - estimated_entropy
         return entropy_gain
+
+    def _get_top_k(self, array):
+        return np.flip(array.argsort()[-self.K:])

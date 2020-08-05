@@ -1,6 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+FIGSIZE = (50, 50)
+
+colormap = plt.cm.jet
+FRAME_ALPHA = 0.6
+from matplotlib.font_manager import FontProperties
+
+fontP = FontProperties()
+
 
 def plot_convergences(simulation_list, window_size=None) -> plt.Figure:
     """
@@ -9,11 +17,14 @@ def plot_convergences(simulation_list, window_size=None) -> plt.Figure:
     :param window_size: int or None, window size for convergence rate, all data points from start to t if None
     :return: the figure with the plots
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=FIGSIZE)
     ax = fig.subplots()
+    global colormap, fontP
+    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
+    ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
-        ax.plot(sim.get_convergence_rate(window_size), ':', label=sim.type, linewidth=1)
-    ax.legend()
+        ax.plot(sim.get_convergence_rate(window_size), ':', label=sim.type, linewidth=3)
+    ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Machine switch rate")
     ax.set_xlabel(r"Trial")
     ax.set_ylabel("Variance " + (f"(window size = {window_size})" if window_size else "(all available trials)"))
@@ -26,11 +37,14 @@ def plot_rewards(simulation_list) -> plt.Figure:
     :param simulation_list: list of Simulation objects, whose run_simulation() method was called
     :return: the figure with the plots
     """
-    fig = plt.figure()
+    global colormap, fontP
+    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
+    fig = plt.figure(figsize=FIGSIZE)
     ax = fig.subplots()
+    ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
         ax.plot(sim.get_reward_sum(), linestyle=":", label=sim.type)
-    ax.legend()
+    ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Cumulative Reward")
     ax.set_xlabel(r"Trial")
     ax.set_ylabel(r"Cumulative Reward")
@@ -44,13 +58,16 @@ def plot_reward_ratios(simulation_list):
     :return: the figure with the plots
     """
     from itertools import combinations
-    fig = plt.figure()
+    fig = plt.figure(figsize=FIGSIZE)
+    global colormap, fontP
+    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
     ax = fig.subplots()
+    ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     rewards = [sim.get_reward_sum() for sim in simulation_list]
     for indices in list(combinations(range(len(rewards)), 2)):
         ax.plot(rewards[indices[0]] / rewards[indices[1]], linestyle=":", linewidth=1,
                 label=f"{simulation_list[indices[0]].type}/{simulation_list[indices[1]].type}")
-    ax.legend()
+    ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Cumulative Reward Ratio")
     ax.set_xlabel(r"Trial")
     ax.set_ylabel(r"Cumulative Reward Ratio")
@@ -81,10 +98,10 @@ def fr_metric(pk, qk):
 
 
 def plot_distance_of_distribution_estimations(sim_list):
-    fig = plt.figure()
+    fig = plt.figure(figsize=FIGSIZE)
     nrow = int(np.floor(np.sqrt(len(sim_list))))
     ncol = int(np.ceil(len(sim_list) / nrow))
-    axs = fig.subplots(nrow, ncol)
+    axs = fig.subplots(nrow, ncol, sharex='col')
     if not np.iterable(axs):
         axs = [axs]
     else:
@@ -96,9 +113,10 @@ def plot_distance_of_distribution_estimations(sim_list):
                                      sim.model.estimated_machine_reward_distribution[i, :])
         axs[j].hist(distances, label=sim.type, linestyle=":", alpha=.3, bins=np.arange(0, 1.025, 0.025))
         axs[j].set_xlim(0, 1)
-        axs[j].set_title(sim.type)
-        axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
-        axs[j].set_ylabel(r"# Occurences")
-        axs[j].legend()
+        axs[j].set_title(sim.type, size=7)
+        if j > (((nrow - 1) * ncol) - 1):  # only last row
+            axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
+        if j % ncol == 0:
+            axs[j].set_ylabel(r"# Occurences")
     fig.suptitle("Distance between estimated and real machine reward distributions")
     return fig
