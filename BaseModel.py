@@ -16,13 +16,20 @@ class BaseModel(ABC):
         self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
         super().__init__()
 
+    @property
+    @abstractmethod
+    def model_name(self):
+        pass
+
     @abstractmethod
     def choose_machines(self, get_estimates):
         pass
 
-    @abstractmethod
     def update(self, chosen_machines, outcomes):
-        pass
+        outcome_indices = np.searchsorted(self.rewards, outcomes)
+        self.machine_reward_counter[chosen_machines, outcome_indices] += 1
+        self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
+                                                                                          axis=1)[:, np.newaxis]
 
     def _get_estimated_entropy(self):
         R = self.rewards.size
@@ -32,3 +39,6 @@ class BaseModel(ABC):
         estimated_entropy = np.sum(self.estimated_machine_reward_distribution * ent, axis=1)
         entropy_gain = entropy(self.estimated_machine_reward_distribution, axis=1) - estimated_entropy
         return entropy_gain
+
+    def _get_top_k(self, array):
+        return np.flip(array.argsort()[-self.K:])
