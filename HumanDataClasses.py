@@ -8,6 +8,12 @@ class humanTrial:
         self.machine_choice = choice
         self.reward = reward
 
+    def getReward(self):
+        return self.reward
+
+    def getChoiche(self):
+        return self.machine_choice+1
+
 class data_machine(ABC):
     @abstractmethod
     def calc_reward_probability(self, reward):
@@ -45,6 +51,12 @@ class trialsBlock:
     def __init__(self, trials=[], machines=[]):
         self.trials = trials
         self.machines = machines
+
+    def getTrials(self):
+        return self.trials
+
+    def getMachines(self):
+        return self.machines
 
     def switchVec(self):
         vec = []
@@ -89,3 +101,6 @@ class GershmanExperimentData:
                 Gershman_Machine(mean=r[4])
             ]))
             self.participants[-1][-1].addTrial(int(r[5])-1, int(r[6]))
+    
+    def getObject(self):
+        return self.participants
