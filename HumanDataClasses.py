@@ -3,63 +3,65 @@ from abc import ABC, abstractmethod
 from DataReader import *
 
 
-class humanTrial:
+class HumanTrial:
     def __init__(self, choice, reward):
         self.machine_choice = choice
         self.reward = reward
 
-    def getReward(self):
+    def get_reward(self):
         return self.reward
 
-    def getChoiche(self):
+    def get_choice(self):
         return self.machine_choice
 
-class data_machine(ABC):
-    @abstractmethod
-    def calc_reward_probability(self, reward):
-        pass
 
-    @property
-    def mean(self):
-        raise NotImplementedError
+# class DataMachine(ABC):
+#     @abstractmethod
+#     def calc_reward_probability(self, reward):
+#         pass
+#
+#     @property
+#     def mean(self):
+#         raise NotImplementedError
+#
+#     # 0 is Gershman's, 1 is Stojic's
+#     @property
+#     def machine_type(self):
+#         raise NotImplementedError
 
 
-    # 0 is Gershman's, 1 is Stojic's
-    @property
-    def machine_type(self):
-        raise NotImplementedError
-
-
-
-class Gershman_Machine(data_machine):
+class GershmanMachine:
     def __init__(self, mean):
         self.mean = mean
         self.machine_type = 0
-    
 
     # Not sure how to implement
     def calc_reward_probability(self, reward):
         return 0
 
 
-class trialsBlock:
-    def __init__(self, trials=[], machines=[]):
+class TrialsBlock:
+    def __init__(self, trials=None, machines=None):
+        if machines is None:
+            machines = []
+        if trials is None:
+            trials = []
         self.trials = trials
         self.machines = machines
 
-    def getTrials(self):
+    def get_trials(self):
         return self.trials
 
-    def getMachines(self):
+    def get_machines(self):
         return self.machines
 
-    def switchVec(self):
+    def switch_vec(self):
         vec = []
-        for i in range(len(self.trials)-1):
-            vec.append(self.trials[i].machine_choice == self.trials[i+1].machine_choice)
+        for i in range(len(self.trials) - 1):
+            vec.append(self.trials[i].machine_choice == self.trials[i + 1].machine_choice)
         return np.array(vec)
 
-    def cumRewardVec(self):
+    def cum_reward_vec(self):
         vec = []
         cur = 0
         for i in range(len(self.trials)):
@@ -67,13 +69,13 @@ class trialsBlock:
             vec.append(cur)
         return np.array(vec)
 
-    def rewardVec(self):
-        vec=[]
+    def reward_vec(self):
+        vec = []
         for i in self.trials:
             vec.append(i.reward)
         return np.array(vec)
-    
-    def addTrial(self, trial):
+
+    def add_trial(self, trial):
         self.trials.append(trial)
 
 
@@ -89,15 +91,15 @@ class GershmanExperimentData:
                 self.participants.append([])
                 cur_block = 0
             elif cur_block != r[1]:
-                cur_block += 1 
+                cur_block += 1
                 self.participants[-1].append([])
-            self.participants[-1][-1].append(trialsBlock(machines=[
-                Gershman_Machine(mean=int(r[3])),
-                Gershman_Machine(mean=int(r[4]))
+            self.participants[-1][-1].append(TrialsBlock(machines=[
+                GershmanMachine(mean=int(r[3])),
+                GershmanMachine(mean=int(r[4]))
             ]))
-            self.participants[-1][-1].addTrial(int(r[5])-1, int(r[6]))
-    
-    def getObject(self):
+            self.participants[-1][-1].add_trial(int(r[5]) - 1, int(r[6]))
+
+    def get_object(self):
         return self.participants
 
 # We've decided not to include Stojic's data in our analysis
