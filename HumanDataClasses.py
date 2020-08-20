@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from .DataReader import *
+from DataReader import *
 
 
 class humanTrial:
