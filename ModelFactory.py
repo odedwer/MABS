@@ -1,6 +1,6 @@
 from enum import Enum
-import UCBModels
-import ThompsonModels
+import DirectedExplorationModels
+import RandomExplorationModels
 import HybridModels
 import BaselineModels
 
@@ -24,6 +24,7 @@ class ModelType(Enum):
     LAMBDA = ConstructorWrapper(HybridModels.LambdaModel)
     LAMBDA_BETA = ConstructorWrapper(HybridModels.LambdaBetaModel)
     LAMBDA_BETA_PLUS = ConstructorWrapper(HybridModels.LambdaBetaModelPlus)
+    LAMBDA_BETA_PLUS_NORMALIZED = ConstructorWrapper(HybridModels.LambdaBetaModelPlusNormalized)
 
     UCB_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonModel)
     BETA_UBC_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaModel)
@@ -32,12 +33,13 @@ class ModelType(Enum):
     STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBModel)
     BETA_STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaModel)
 
-    UCB_NORMAL = ConstructorWrapper(UCBModels.UCBNormalModel)
-    UCB_ENTROPY_GAIN = ConstructorWrapper(UCBModels.UCBEntropyGainModel)
-    UCB_ENTROPY_NORMALIZED = ConstructorWrapper(UCBModels.UCBEntropyNormalizedModel)
+    UCB_NORMAL = ConstructorWrapper(DirectedExplorationModels.UCBNormalModel)
+    UCB_ENTROPY_GAIN = ConstructorWrapper(DirectedExplorationModels.UCBEntropyGainModel)
+    UCB_ENTROPY_NORMALIZED = ConstructorWrapper(DirectedExplorationModels.UCBEntropyNormalizedModel)
 
-    THOMPSON_NORMAL = ConstructorWrapper(ThompsonModels.ThompsonNormalModel)
-    THOMPSON_ENTROPY = ConstructorWrapper(ThompsonModels.ThompsonEntropyGainModel)
+    THOMPSON_NORMAL = ConstructorWrapper(RandomExplorationModels.ThompsonNormalModel)
+    THOMPSON_ENTROPY = ConstructorWrapper(RandomExplorationModels.ThompsonEntropyGainModel)
 
     BASELINE_MODEL = ConstructorWrapper(BaselineModels.RandomModel)
     ENTROPY_GAIN_MODEL = ConstructorWrapper(BaselineModels.EntropyGainModel)
+    OPTIMAL_MODEL = ConstructorWrapper(BaselineModels.OptimalModel)

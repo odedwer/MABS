@@ -10,6 +10,7 @@ class Machine:
         """
         self.rewards = np.array(rewards)
         self.reward_probabilities = reward_probabilities.copy()
+        self.expectancy = self.reward_probabilities @ self.rewards
         self.num_of_plays = 0
         self.sum_reward = 0
         self.outcomes = []
@@ -28,7 +29,7 @@ class Machine:
         return reward
 
     def get_expectancy(self):
-        return self.reward_probabilities @ self.rewards
+        return self.expectancy
 
     def get_outcomes(self):
         return np.zeros((1,)) if not self.outcomes else np.asarray(self.outcomes)

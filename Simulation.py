@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from Machine import Machine
-from ModelFactory import getModel
 
 
 class Simulation:

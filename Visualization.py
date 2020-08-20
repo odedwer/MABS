@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import linregress
 
 SIMULATION = "s"
+DATA = "d"
 
 FIGSIZE = (50, 50)
 
@@ -56,6 +58,41 @@ def plot_rewards(simulation_list, list_type="s") -> plt.Figure:
     ax.set_title("Cumulative Reward")
     ax.set_xlabel(r"Trial")
     ax.set_ylabel(r"Cumulative Reward")
+    return fig
+
+
+def plot_regret(simulation_list, optimal, list_type="s") -> plt.Figure:
+    """
+    Plots the difference of cumulative reward of optimal model vs other models
+    :param optimal: optimal model
+    :param simulation_list: list of Simulation objects, whose run_simulation() method was called
+    :param list_type str, s for simulation, d for data. s means simulation list contains Simulation objects,
+            d means simulation list contains tuples of label,data
+    :return: the figure with the plots
+    """
+    global colormap, fontP
+    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
+    fig = plt.figure(figsize=FIGSIZE)
+    ax1, ax2 = fig.subplots(1, 2)
+    ax1.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
+    ax2.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
+    optimal_reward = optimal.get_reward_sum() if list_type == SIMULATION else optimal[1]
+    slopes = []
+    for sim in simulation_list:
+        regret = optimal_reward - (sim.get_reward_sum() if list_type == SIMULATION else sim[1])
+        slope, _, _, _, _ = linregress(np.arange(regret.size), regret)
+        slopes.append(slope)
+        ax1.plot(regret, linestyle=":", label=sim.type if list_type == SIMULATION else sim[0])
+    ax1.legend(prop=fontP, framealpha=FRAME_ALPHA)
+    ax1.set_title("Regret Over trials")
+    ax1.set_xlabel(r"Trial")
+    ax1.set_ylabel(r"Regret (optimal reward - model reward)")
+    ax2.bar([sim.type for sim in simulation_list] if list_type == SIMULATION else [sim[0] for sim in simulation_list],
+            slopes)
+    ax2.tick_params(axis='x', labelrotation=60)
+    ax2.set_title("Regret Slopes")
+    ax2.set_ylabel(r"Slope")
+    fig.suptitle("Regret")
     return fig
 
 
@@ -129,9 +166,11 @@ def plot_distance_of_distribution_estimations(sim_list, list_type="s"):
         else:
             distances = sim[1]
         axs[j].hist(distances, label=sim.type if list_type == SIMULATION else sim[0], linestyle=":", alpha=.3,
-                    bins=np.arange(0, 1.025, 0.025))
+                    bins=np.arange(0, 1.025, 0.025), density=True)
+        axs[j].text(0.6, 0.9, "mean: %.3f\nSD: %.3f" % (np.mean(distances), np.std(distances)),
+                    transform=axs[j].transAxes)
         axs[j].set_xlim(0, 1)
-        axs[j].set_title(sim.type, size=7)
+        axs[j].set_title(sim.type if list_type == SIMULATION else sim[0], size=7)
         if j > (((nrow - 1) * ncol) - 1):  # only last row
             axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
         if j % ncol == 0:

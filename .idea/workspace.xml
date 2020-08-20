@@ -19,16 +19,16 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models">
-      <change afterPath="$PROJECT_DIR$/BaselineModels.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ThompsonModels.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UCBModels.py" afterDir="false" />
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="refactoring of Models.py into 4 new files - UCBModels.py, ThompsonModels.py, BaselineModels.py, HybridModels.py. Removed Models.py.&#10;&#10;Added possibility to send list of arrays to visualization functions.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaseModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BaselineModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaselineModels.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HybridModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Machine.py" beforeDir="false" afterPath="$PROJECT_DIR$/Machine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ModelFactory.py" beforeDir="false" afterPath="$PROJECT_DIR$/ModelFactory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ThompsonModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomExplorationModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UCBModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/DirectedExplorationModels.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +55,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="ToolWindowCommit.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -131,7 +132,8 @@
       <workItem from="1597764255366" duration="6567000" />
       <workItem from="1597816667327" duration="8000" />
       <workItem from="1597940252928" duration="835000" />
-      <workItem from="1597930458046" duration="3241000" />
+      <workItem from="1597930458046" duration="9279000" />
+      <workItem from="1597940553905" duration="10662000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -168,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596661787018</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="refactoring of Models.py into 4 new files - UCBModels.py, ThompsonModels.py, BaselineModels.py, HybridModels.py. Removed Models.py.&#10;&#10;Added possibility to send list of arrays to visualization functions.">
+      <created>1597934213609</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1597934213609</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,7 +201,8 @@
     <MESSAGE value="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better" />
     <MESSAGE value="Added update of estimated probabilities to BaseModel.py update method.&#10;Integrated beta handle in lambda-beta model as multiplication of the estimated entropy gains with 10^(-beta handle) before taking -ln&#10;Added model_name abstract property in BaseModel that contains the name of the model for visualizations&#10;Changed convergence plot title to &quot;machine switch rate&quot;" />
     <MESSAGE value="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models" />
-    <option name="LAST_COMMIT_MESSAGE" value="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models" />
+    <MESSAGE value="refactoring of Models.py into 4 new files - UCBModels.py, ThompsonModels.py, BaselineModels.py, HybridModels.py. Removed Models.py.&#10;&#10;Added possibility to send list of arrays to visualization functions." />
+    <option name="LAST_COMMIT_MESSAGE" value="refactoring of Models.py into 4 new files - UCBModels.py, ThompsonModels.py, BaselineModels.py, HybridModels.py. Removed Models.py.&#10;&#10;Added possibility to send list of arrays to visualization functions." />
   </component>
   <component name="WindowStateProjectService">
     <state x="2724" y="272" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1596655628685">
@@ -207,38 +217,46 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="782" y="312" width="424" height="496" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1595482151596" />
-    <state width="1802" height="340" key="GridCell.Tab.0.bottom" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.0.bottom" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.0.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.0.center" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.0.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.0.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
+    <state width="1874" height="350" key="GridCell.Tab.0.center" timestamp="1597950498265">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.0.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.0.left" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.0.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498265" />
+    <state width="1802" height="340" key="GridCell.Tab.0.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
+    <state width="1874" height="350" key="GridCell.Tab.0.left" timestamp="1597950498265">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.0.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.0.right" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.0.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498265" />
+    <state width="1802" height="340" key="GridCell.Tab.0.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
+    <state width="1874" height="350" key="GridCell.Tab.0.right" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.0.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.1.bottom" timestamp="1596657617776">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.0.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.0.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
+    <state width="1874" height="350" key="GridCell.Tab.1.bottom" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617776" />
-    <state width="1802" height="340" key="GridCell.Tab.1.center" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.1.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
+    <state width="1874" height="350" key="GridCell.Tab.1.center" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.1.left" timestamp="1596657617775">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.1.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
+    <state width="1874" height="350" key="GridCell.Tab.1.left" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617775" />
-    <state width="1802" height="340" key="GridCell.Tab.1.right" timestamp="1596657617776">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1874" height="350" key="GridCell.Tab.1.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
+    <state width="1874" height="350" key="GridCell.Tab.1.right" timestamp="1597950498266">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1802" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596657617776" />
+    <state width="1874" height="350" key="GridCell.Tab.1.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1597950498266" />
+    <state width="1802" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
     <state x="488" y="189" width="1016" height="742" key="SettingsEditor" timestamp="1595482775371">
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
@@ -265,13 +283,23 @@
     <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1595482292123" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Driver.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="np.sign(lambda_var - ent_var) * learning_rate * (lambda_var / ent_var)" language="Python" />
+        <watch expression="sim.results" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1596657563772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1597950410741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
