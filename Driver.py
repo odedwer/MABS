@@ -8,15 +8,18 @@ import matplotlib.pyplot as plt
 # %%
 N = 30
 K = 5
-T = 10000
+T = 1000
 POSSIBLE_REWARDS = np.array([1, 5, 10, 100])
 
 get_reward_probabilities = lambda: np.random.dirichlet(np.ones_like(POSSIBLE_REWARDS))
 # %%
-SEED = 98  # same seeds
+model_type_list = []
+model_parameters_list = []
+for seed in range(1, 101):
+    np.random.seed(seed)
 
 sim_list = []
-#%%
+# %%
 np.random.seed(SEED)
 sim = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.LAMBDA, lambda_handle=.5)
 sim.run_simulation()
@@ -104,7 +107,29 @@ sim.run_simulation()
 sim_list.append(sim)
 
 # %%
-window_size = 300
+np.random.seed(SEED)
+sim = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.LAMBDA_BETA, lambda_handle=.5,
+                 beta_handle=0.2)
+sim.run_simulation()
+sim_list.append(sim)
+
+np.random.seed(SEED)
+sim = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.LAMBDA_BETA_PLUS, lambda_handle=.5,
+                 beta_handle=0.2)
+sim.run_simulation()
+sim_list.append(sim)
+
+np.random.seed(SEED)
+sim = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.LAMBDA_BETA, lambda_handle=.5,
+                 beta_handle=0.8)
+sim.run_simulation()
+sim_list.append(sim)
+
+np.random.seed(SEED)
+sim = Simulation(N, K, T, POSSIBLE_REWARDS, get_reward_probabilities, ModelType.LAMBDA_BETA_PLUS, lambda_handle=.5,
+                 beta_handle=0.8)
+sim.run_simulation()
+sim_list.append(sim)
 # %% plot convergence
 fig = vis.plot_convergences(sim_list)
 # fig.savefig("%s convergence rate.png" % model_name)
@@ -118,4 +143,3 @@ fig = vis.plot_reward_ratios(sim_list)
 # %% Fisher Rao
 fig = vis.plot_distance_of_distribution_estimations(sim_list)
 # fig.savefig("%s FR distance between estimated and real reward probabilities.png" % model_name)
-

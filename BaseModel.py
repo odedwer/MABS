@@ -31,7 +31,7 @@ class BaseModel(ABC):
         self.estimated_machine_reward_distribution = self.machine_reward_counter / np.sum(self.machine_reward_counter,
                                                                                           axis=1)[:, np.newaxis]
 
-    def _get_estimated_entropy(self):
+    def _get_estimated_entropy_gain(self):
         R = self.rewards.size
         reward_counters_for_entropy = np.repeat(self.machine_reward_counter, R, 1).reshape((self.N, R, R), order='F')
         reward_counters_for_entropy[:, np.arange(R), np.arange(R)] += 1

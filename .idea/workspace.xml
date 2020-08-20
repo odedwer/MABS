@@ -19,7 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="Added update of estimated probabilities to BaseModel.py update method.&#10;Integrated beta handle in lambda-beta model as multiplication of the estimated entropy gains with 10^(-beta handle) before taking -ln&#10;Added model_name abstract property in BaseModel that contains the name of the model for visualizations&#10;Changed convergence plot title to &quot;machine switch rate&quot;">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models">
+      <change afterPath="$PROJECT_DIR$/BaselineModels.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ThompsonModels.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UCBModels.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaseModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
@@ -44,6 +48,7 @@
   </component>
   <component name="ProjectId" id="1f4fC081wCNax7ghlD4NNw3MEzg" />
   <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
@@ -120,7 +125,13 @@
       <workItem from="1596557800885" duration="12077000" />
       <workItem from="1596631479839" duration="12236000" />
       <workItem from="1596653196664" duration="5119000" />
-      <workItem from="1596659443249" duration="2330000" />
+      <workItem from="1596659443249" duration="2380000" />
+      <workItem from="1597139960821" duration="3000" />
+      <workItem from="1597257336359" duration="604000" />
+      <workItem from="1597764255366" duration="6567000" />
+      <workItem from="1597816667327" duration="8000" />
+      <workItem from="1597940252928" duration="835000" />
+      <workItem from="1597930458046" duration="3241000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -150,7 +161,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596645994542</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models">
+      <created>1596661787018</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1596661787018</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +191,8 @@
     <MESSAGE value="fixed convergence visualization, added entropy gain" />
     <MESSAGE value="fixed UCBEntropyGainModel using -log()&#10;Made some visualizations better" />
     <MESSAGE value="Added update of estimated probabilities to BaseModel.py update method.&#10;Integrated beta handle in lambda-beta model as multiplication of the estimated entropy gains with 10^(-beta handle) before taking -ln&#10;Added model_name abstract property in BaseModel that contains the name of the model for visualizations&#10;Changed convergence plot title to &quot;machine switch rate&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added update of estimated probabilities to BaseModel.py update method.&#10;Integrated beta handle in lambda-beta model as multiplication of the estimated entropy gains with 10^(-beta handle) before taking -ln&#10;Added model_name abstract property in BaseModel that contains the name of the model for visualizations&#10;Changed convergence plot title to &quot;machine switch rate&quot;" />
+    <MESSAGE value="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models" />
+    <option name="LAST_COMMIT_MESSAGE" value="added many models&#10;added some parameters to visualization for better results&#10;added model_name abstract property for BaseModel for informative plot model names.&#10;extracted the flip(array.argsort()[-self.K:]) to a method in BaseModel&#10;Wrote all the simulations in the driver for the models" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2724" y="272" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1596655628685">
@@ -224,10 +243,10 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="488" y="189" width="1016" height="742" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1595482775371" />
-    <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596646004024">
+    <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596661793247">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596646004024" />
+    <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596661793247" />
     <state x="2092" y="127" width="1648" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1596639708873">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
@@ -246,15 +265,6 @@
     <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1595482292123" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Models.py</url>
-          <line>258</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="np.sign(lambda_var - ent_var) * learning_rate * (lambda_var / ent_var)" language="Python" />
