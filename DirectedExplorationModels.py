@@ -1,5 +1,6 @@
 from BaseModel import *
 
+
 class UCBNormalModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
@@ -29,12 +30,14 @@ class UCBNormalModel(BaseModel):
 
 
 class UCBEntropyGainModel(BaseModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.machine_reward_counter = np.ones((self.N, self.rewards.size))
         self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
-        self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards) + (
-            self._get_estimated_entropy_gain()[:, np.newaxis])
+        self.beta_handle = beta_handle
+        self.estimated_machine_ucb = (1 - beta_handle) * (
+                self.estimated_machine_reward_distribution @ self.rewards) + self.beta_handle * (
+                                         self._get_estimated_entropy_gain()[:, np.newaxis])
 
     @property
     def model_name(self):
@@ -54,8 +57,9 @@ class UCBEntropyGainModel(BaseModel):
 
         # add entropy for all chosen machines - the higher the entropy, the higher our uncertainty
         # so we are optimistic in the face of uncertainty
-        self.estimated_machine_ucb[chosen_machines] = (self.estimated_machine_reward_distribution[chosen_machines, :] @
-                                                       self.rewards) + self._get_estimated_entropy_gain()
+        self.estimated_machine_ucb[chosen_machines] = (1 - self.beta_handle) * (
+                    self.estimated_machine_reward_distribution[chosen_machines, :] @
+                    self.rewards) + self.beta_handle * self._get_estimated_entropy_gain()
 
 
 class UCBEntropyNormalizedModel(BaseModel):

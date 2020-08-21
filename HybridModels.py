@@ -183,7 +183,7 @@ class StochasticThompsonUCBModel(BaseModel):
         super().update(chosen_machines, outcomes)
         self.ucb.update(chosen_machines, outcomes)
         self.thompson.update(chosen_machines, outcomes)
-        self.theta *= self.learning_rate
+        self.theta += self.theta*self.learning_rate
         if self.theta > 1:
             self.theta = 1
 
