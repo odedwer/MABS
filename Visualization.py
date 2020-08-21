@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 SIMULATION = "s"
 DATA = "d"
@@ -12,6 +13,17 @@ FRAME_ALPHA = 0.6
 from matplotlib.font_manager import FontProperties
 
 fontP = FontProperties()
+
+
+def plot_average_over_seeds(convergences, rewards, fr_metrics):
+    plot_convergences(convergences, DATA)
+    plot_rewards(rewards, DATA)
+    plot_distance_of_distribution_estimations(fr_metrics, DATA)
+    not_optimal = [sim for sim in rewards if sim[0] != "Optimal Model"]
+    optimal = [sim for sim in rewards if sim[0] == "Optimal Model"]
+    if len(optimal) > 0:
+        optimal = optimal[0]
+        plot_regret(not_optimal, optimal, list_type=DATA)
 
 
 def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.Figure:
@@ -96,33 +108,19 @@ def plot_regret(simulation_list, optimal, list_type="s") -> plt.Figure:
     return fig
 
 
-def plot_reward_ratios(simulation_list, list_type="s"):
-    """
-    Plots the time by time ratio of cumulative reward of given simulations, for all pairs
-    :param simulation_list: list of Simulation objects, whose run_simulation() method was called
-    :param list_type str, s for simulation, d for data. s means simulation list contains Simulation objects,
-            d means simulation list contains tuples of label,data
-    :return: the figure with the plots
-    """
-    from itertools import combinations
-    fig = plt.figure(figsize=FIGSIZE)
-    global colormap, fontP
-    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
-    ax = fig.subplots()
-    ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
-    rewards = [sim.get_reward_sum() for sim in simulation_list] if list_type == SIMULATION else [sim for sim in
-                                                                                                 simulation_list]
-    for indices in list(combinations(range(len(rewards)), 2)):
-        ax.plot(rewards[indices[0]] / rewards[indices[1]] if list_type == SIMULATION else rewards[indices[0]][1] /
-                                                                                          rewards[indices[1]][1],
-                linestyle=":", linewidth=1,
-                label=f"{simulation_list[indices[0]].type}/{simulation_list[indices[1]].type}" if list_type == SIMULATION
-                else f"{simulation_list[indices[0]][0]}/{simulation_list[indices[1]][0]}")
-    ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
-    ax.set_title("Cumulative Reward Ratio")
-    ax.set_xlabel(r"Trial")
-    ax.set_ylabel(r"Cumulative Reward Ratio")
-    return fig
+def plot_lambda_beta_surface(beta_list, lambda_list, reward_list):
+    reward_list = [r[1] for r in reward_list]
+    fig = plt.figure()
+    slopes = np.zeros(len(reward_list))
+    for i, r in enumerate(reward_list):
+        slope, _, _, _, _ = linregress(np.arange(r.size), r)
+        slopes[i] = slope
+    ax = Axes3D(fig)
+    ax.set_xlabel(r"$\lambda$ value")
+    ax.set_ylabel(r"$\beta$ value")
+    slopes = slopes.reshape((len(beta_list), len(lambda_list)), order='F')
+    x, y = np.meshgrid(lambda_list, beta_list)
+    ax.plot_surface(x, y, slopes, cmap=plt.cm.coolwarm, alpha=0.6)
 
 
 def fix_sig(sig):
