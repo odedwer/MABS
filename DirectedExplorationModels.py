@@ -74,8 +74,8 @@ class UCBEntropyNormalizedModel(BaseModel):
         return "Normalized Entropy Driven UCB1"
 
     def choose_machines(self, get_estimates=False) -> np.array:
-        cur_estimatess = self.estimated_machine_expectancy + self._get_estimated_entropy_gain()
-        return cur_estimatess if get_estimates else super()._get_top_k(cur_estimatess)
+        cur_estimates = self.estimated_machine_expectancy + self._get_estimated_entropy_gain()
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
 
     def update(self, chosen_machines, outcomes):
         # update probabilities as simple frequency counters, where all counters are initialized at 1

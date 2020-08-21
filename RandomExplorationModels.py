@@ -24,8 +24,9 @@ class ThompsonNormalModel(BaseModel):
 
 
 class ThompsonEntropyGainModel(ThompsonNormalModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+        self.beta_handle = beta_handle
 
     @property
     def model_name(self):
@@ -44,5 +45,5 @@ class ThompsonEntropyGainModel(ThompsonNormalModel):
         ent = self._get_estimated_entropy_gain()
         ent = ent / np.sum(ent)
         r = np.random.standard_gamma(
-            self.machine_reward_counter / -np.log(ent)[:, np.newaxis])
+            self.machine_reward_counter / (-np.log((10 ** (-self.beta_handle)) * ent))[:, np.newaxis])
         return r / r.sum(-1, keepdims=True)
