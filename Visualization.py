@@ -15,15 +15,11 @@ from matplotlib.font_manager import FontProperties
 fontP = FontProperties()
 
 
-def plot_average_over_seeds(convergences, rewards, fr_metrics):
+def plot_average_over_seeds(convergences, rewards, fr_metrics, regrets):
     plot_convergences(convergences, DATA)
     plot_rewards(rewards, DATA)
     plot_distance_of_distribution_estimations(fr_metrics, DATA)
-    not_optimal = [sim for sim in rewards if sim[0] != "Optimal Model"]
-    optimal = [sim for sim in rewards if sim[0] == "Optimal Model"]
-    if len(optimal) > 0:
-        optimal = optimal[0]
-        plot_regret(not_optimal, optimal, list_type=DATA)
+    plot_regret(regrets)
 
 
 def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.Figure:
@@ -73,47 +69,37 @@ def plot_rewards(simulation_list, list_type="s") -> plt.Figure:
     return fig
 
 
-def plot_regret(simulation_list, optimal, list_type="s") -> plt.Figure:
+def plot_regret(regret_list) -> plt.Figure:
     """
     Plots the difference of cumulative reward of optimal model vs other models
-    :param optimal: optimal model
-    :param simulation_list: list of Simulation objects, whose run_simulation() method was called
-    :param list_type str, s for simulation, d for data. s means simulation list contains Simulation objects,
-            d means simulation list contains tuples of label,data
+    :param regret_list: list of tuples, first element is model type, second is list of regrets
     :return: the figure with the plots
     """
     global colormap, fontP
-    fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
+    fontP.set_size('small' if len(regret_list) > 5 else 'medium')
     fig = plt.figure(figsize=FIGSIZE)
-    ax1, ax2 = fig.subplots(1, 2)
-    ax1.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
-    ax2.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
-    optimal_reward = optimal.get_reward_sum() if list_type == SIMULATION else optimal[1]
+    ax = fig.subplots()
+    ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(regret_list)))))
     slopes = []
-    for sim in simulation_list:
-        regret = optimal_reward - (sim.get_reward_sum() if list_type == SIMULATION else sim[1])
+    for label, regret in regret_list:
         slope, _, _, _, _ = linregress(np.arange(regret.size), regret)
         slopes.append(slope)
-        ax1.plot(regret, linestyle=":", label=sim.type if list_type == SIMULATION else sim[0])
-    ax1.legend(prop=fontP, framealpha=FRAME_ALPHA)
-    ax1.set_title("Regret Over trials")
-    ax1.set_xlabel(r"Trial")
-    ax1.set_ylabel(r"Regret (optimal reward - model reward)")
-    ax2.bar([sim.type for sim in simulation_list] if list_type == SIMULATION else [sim[0] for sim in simulation_list],
-            slopes)
-    ax2.tick_params(axis='x', labelrotation=60)
-    ax2.set_title("Regret Slopes")
-    ax2.set_ylabel(r"Slope")
-    fig.suptitle("Regret")
+        if label == "Optimal Model":
+            continue
+        ax.plot(regret, label=label)
+    ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
+    ax.set_title("Regret Over trials")
+    ax.set_xlabel(r"Trial")
+    ax.set_ylabel(r"Regret (optimal reward - model reward)")
     return fig
 
 
-def plot_lambda_beta_surface(beta_list, lambda_list, reward_list):
-    reward_list = [r[1] for r in reward_list]
+def plot_lambda_beta_surface(beta_list, lambda_list, data_list):
+    data_list = [d[1] for d in data_list]
     fig = plt.figure()
-    slopes = np.zeros(len(reward_list))
-    for i, r in enumerate(reward_list):
-        slope, _, _, _, _ = linregress(np.arange(r.size), r)
+    slopes = np.zeros(len(data_list))
+    for i, d in enumerate(data_list):
+        slope, _, _, _, _ = linregress(np.arange(d.size), d)
         slopes[i] = slope
     ax = Axes3D(fig)
     ax.set_xlabel(r"$\lambda$ value")

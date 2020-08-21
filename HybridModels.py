@@ -76,7 +76,7 @@ class LambdaBetaModelPlusNormalized(LambdaModel):
 
     @property
     def model_name(self):
-        return r"TS, UCB1 + Entropy, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
+        return r"TS, UCB1 + Entropy normalized, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
 
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
