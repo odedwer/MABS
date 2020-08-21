@@ -57,17 +57,6 @@ def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, po
            [(sim_titles[i], distances[i]) for i in range(len(model_type_list))]
 
 
-def plot_average_over_seeds(convergences, rewards, fr_metrics):
-    vis.plot_convergences(convergences, vis.DATA)
-    vis.plot_rewards(rewards, vis.DATA)
-    vis.plot_distance_of_distribution_estimations(fr_metrics, vis.DATA)
-    not_optimal = [sim for sim in rewards if sim[0] != "Optimal Model"]
-    optimal = [sim for sim in rewards if sim[0] == "Optimal Model"]
-    if len(optimal) > 0:
-        optimal = optimal[0]
-        vis.plot_regret(not_optimal, optimal, list_type=vis.DATA)
-
-
 # %% lambda comparison
 model_type_list = [ModelType.UCB_NORMAL,
                    ModelType.THOMPSON_NORMAL,
@@ -125,6 +114,16 @@ model_parameters_list = [{"lambda_handle": .5},
 lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics = average_over_seeds(model_type_list,
                                                                                            model_parameters_list)
 plot_average_over_seeds(lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics)
+
+# %% beta-lambda heatmap comparison
+model_type_list = [ModelType.LAMBDA_BETA_PLUS for i in range(25)]
+lambda_list = np.arange(0, 1, 2e-1)
+# beta_list = np.linspace(1e-1, 100, lambda_list.size)
+beta_list = lambda_list.copy()
+model_parameters_list = [{"lambda_handle": i, "beta_handle": j} for i in lambda_list for j in beta_list]
+lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics = average_over_seeds(model_type_list,
+                                                                                           model_parameters_list)
+vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_rewards)
 
 # %%
 
