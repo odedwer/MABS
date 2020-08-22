@@ -35,6 +35,9 @@ class HumanDataHandler:
     def get_n_blocks(self, subject):
         return np.max(self.df.loc[self.df['subject'] == subject, 'block'])
 
+    def get_n_trials(self, subject, block):
+        return np.max(self.df.loc[(self.df['subject'] == subject) & (self.df['block'] == block), 'trial'])
+
 # class HumanTrial:
 #     def __init__(self, choice, reward):
 #         self.machine_choice = choice
