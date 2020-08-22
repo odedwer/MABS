@@ -37,7 +37,7 @@ def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.F
             d means simulation list contains tuples of label,data
     :return: the figure with the plots
     """
-    fig = plt.figure(figsize=FIGSIZE)
+    fig = plt.figure()
     ax = fig.subplots()
     global colormap, fontP
     fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
@@ -62,7 +62,7 @@ def plot_rewards(simulation_list, list_type="s") -> plt.Figure:
     """
     global colormap, fontP
     fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
-    fig = plt.figure(figsize=FIGSIZE)
+    fig = plt.figure()
     ax = fig.subplots()
     ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
@@ -83,7 +83,7 @@ def plot_regret(regret_list) -> plt.Figure:
     """
     global colormap, fontP
     fontP.set_size('small' if len(regret_list) > 5 else 'medium')
-    fig = plt.figure(figsize=FIGSIZE)
+    fig = plt.figure()
     ax = fig.subplots()
     ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(regret_list)))))
     slopes = []
@@ -142,7 +142,7 @@ def fr_metric(pk, qk):
 
 
 def plot_distance_of_distribution_estimations(sim_list, list_type="s"):
-    fig = plt.figure(figsize=FIGSIZE)
+    fig = plt.figure()
     nrow = int(np.floor(np.sqrt(len(sim_list))))
     ncol = int(np.ceil(len(sim_list) / nrow))
     axs = fig.subplots(nrow, ncol, sharex='col')
@@ -161,12 +161,12 @@ def plot_distance_of_distribution_estimations(sim_list, list_type="s"):
         axs[j].hist(distances, label=sim.type if list_type == SIMULATION else sim[0], alpha=.3,
                     bins=np.arange(0, 1.025, 0.025), density=True)
         axs[j].text(0.6, 0.9, "mean: %.3f\nSD: %.3f" % (np.mean(distances), np.std(distances)),
-                    transform=axs[j].transAxes)
+                    transform=axs[j].transAxes, fontsize=6)
         axs[j].set_xlim(0, 1)
         axs[j].set_title(sim.type if list_type == SIMULATION else sim[0], size=7)
         if j > (((nrow - 1) * ncol) - 1):  # only last row
-            axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)")
+            axs[j].set_xlabel(r"Fisher-Rao metric ($\in [0,1]$)", fontsize=7)
         if j % ncol == 0:
-            axs[j].set_ylabel(r"# Occurences")
+            axs[j].set_ylabel(r"# Occurences",fontsize=7)
     fig.suptitle("Distance between estimated and real machine reward distributions")
     return fig

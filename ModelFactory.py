@@ -52,3 +52,5 @@ class ModelType(Enum):
     NLEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaNoiseModel)
     NAEG_BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaPlusNoiseModel)
     NAEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaPlusNoiseModel)
+
+    SMART_MODEL = ConstructorWrapper(HybridModels.SmartModel)

@@ -11,14 +11,13 @@ def reload_imports():
     reload(s)
 
 
-MIN_SEED = 1
-MAX_SEED = 25
+MIN_SEED = 96
+MAX_SEED = 98
 N = 10
 K = 2
-T = 1000
-POSSIBLE_REWARDS = np.asarray([0, 3, 5, 10])
-get_reward_probabilities = lambda: np.random.dirichlet(
-    np.arange(POSSIBLE_REWARDS.shape[0], 0, -1) / POSSIBLE_REWARDS.shape[0])
+T = 10000
+POSSIBLE_REWARDS = np.asarray([5, 10, 20, 30, 50])
+get_reward_probabilities = lambda: np.random.dirichlet(np.ones_like(POSSIBLE_REWARDS))
 
 
 def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, possible_rewards=POSSIBLE_REWARDS,
@@ -73,31 +72,38 @@ def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, po
 
 
 # %% beta comparison LEG-UCB
-model_num = 10
+model_num = 2
 model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.LEG_UCB for _ in range(model_num)]
-beta_list = [0.1, 0.5, 0.9, 3, 5, 10, 20, 30, 40, 50]
+beta_list = [1, 3]
 model_parameters_list = [{}] + [{"beta_handle": b} for b in beta_list]
 beta_convergences, beta_rewards, beta_fr_metrics, beta_regret = average_over_seeds(model_type_list,
                                                                                    model_parameters_list)
+# %%
 vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, beta_regret, "LEG-UCB beta comparison")
 
-# %% beta comparison AEG-UCB
-model_num = 10
-model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.AEG_UCB for _ in range(model_num)]
-beta_list = np.linspace(0.1, 0.9, model_num)
-model_parameters_list = [{}] + [{"beta_handle": b} for b in beta_list]
+# %% beta comparison L\AEG-UCB
+model_num = 3
+model_type_list = [ModelType.OPTIMAL_BASELINE, ModelType.UCB] + [ModelType.AEG_UCB for _ in range(model_num)] + [
+    ModelType.LEG_UCB for _ in range(model_num)]
+beta_list_aeg = np.linspace(0.1, 0.9, model_num)
+beta_list_leg = np.linspace(5, 25, model_num)
+model_parameters_list = [{}, {}] + [{"beta_handle": b} for b in beta_list_aeg] + [{"beta_handle": b} for b in
+                                                                                  beta_list_leg]
 beta_convergences, beta_rewards, beta_fr_metrics, beta_regret = average_over_seeds(model_type_list,
                                                                                    model_parameters_list)
-vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, beta_regret, "AEG-UCB beta comparison")
+vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, beta_regret, "UCB VS EG-UCB")
 
-# %% beta comparison LEG-TS
-model_num = 10
-model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.LEG_TS for _ in range(model_num)]
-beta_list = [0.1, 0.5, 0.9, 3, 5, 10, 20, 30, 40, 50]
-model_parameters_list = [{}] + [{"beta_handle": b} for b in beta_list]
+# %% beta comparison L\AEG-UCB
+model_num = 3
+model_type_list = [ModelType.OPTIMAL_BASELINE, ModelType.TS] + [ModelType.AEG_TS for _ in range(model_num)] + [
+    ModelType.LEG_TS for _ in range(model_num)]
+beta_list_aeg = np.linspace(0.1, 0.9, model_num)
+beta_list_leg = np.linspace(5, 25, model_num)
+model_parameters_list = [{}, {}] + [{"beta_handle": b} for b in beta_list_aeg] + [{"beta_handle": b} for b in
+                                                                                  beta_list_leg]
 beta_convergences, beta_rewards, beta_fr_metrics, beta_regret = average_over_seeds(model_type_list,
                                                                                    model_parameters_list)
-vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, beta_regret, "LEG-TS beta comparison")
+vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, beta_regret, "TS VS EG-TS")
 
 # %% beta comparison AEG-TS
 model_num = 10
@@ -111,9 +117,9 @@ vis.plot_average_over_seeds(beta_convergences, beta_rewards, beta_fr_metrics, be
 
 
 # %% beta-lambda heatmap comparison
-model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.LEG_LH for i in range(100)]
-lambda_list = np.linspace(0, 1, 10)
-beta_list = np.linspace(1e-1, 100, lambda_list.size)
+model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.LEG_LH for i in range(9)]
+lambda_list = np.linspace(0.28, 0.32, 3)
+beta_list = np.linspace(14, 15, lambda_list.size)
 # beta_list = lambda_list.copy()
 model_parameters_list = [{}] + [{"lambda_handle": i, "beta_handle": j} for i in lambda_list for j
                                 in beta_list]
@@ -166,15 +172,68 @@ Which comparisons should we make - all comparisons include entropyGain + optimal
 """
 # %%
 model_type_list = [ModelType.OPTIMAL_BASELINE,
+                   ModelType.RANDOM_BASELINE,
                    ModelType.UCB,
-                   ModelType.EG_BASELINE,
+                   ModelType.TS,
+                   ModelType.LH,
                    ModelType.LEG_BH,
-                   ModelType.LEG_UBH]
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH]
 model_parameters_list = [{},
                          {},
                          {},
-                         {"beta_handle": 0.4, "theta": 0.5},
-                         {"beta_handle": 0.4, "theta": 0.2, "learning_rate": .01}]
+                         {},
+                         {"lambda_handle": .5},
+                         {"beta_handle": .1, "theta": .2},
+                         {"beta_handle": .5, "theta": .2},
+                         {"beta_handle": 1, "theta": .2},
+                         {"beta_handle": 15, "theta": .2},
+                         {"beta_handle": 30, "theta": .2}]
 lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret = average_over_seeds(model_type_list,
                                                                                            model_parameters_list)
 vis.plot_average_over_seeds(lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret)
+
+# %%
+model_type_list = [ModelType.OPTIMAL_BASELINE,
+                   ModelType.RANDOM_BASELINE,
+                   ModelType.UCB,
+                   ModelType.TS,
+                   ModelType.LH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH,
+                   ModelType.LEG_BH]
+model_parameters_list = [{},
+                         {},
+                         {},
+                         {},
+                         {"lambda_handle": .5},
+                         {"beta_handle": .1, "theta": .2},
+                         {"beta_handle": .5, "theta": .2},
+                         {"beta_handle": 1, "theta": .2},
+                         {"beta_handle": 15, "theta": .2},
+                         {"beta_handle": 30, "theta": .2}]
+lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret = average_over_seeds(model_type_list,
+                                                                                           model_parameters_list)
+vis.plot_average_over_seeds(lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret)
+# %%
+model_type_list = [ModelType.OPTIMAL_BASELINE,
+                   ModelType.RANDOM_BASELINE,
+                   ModelType.UCB,
+                   ModelType.TS,
+                   ModelType.SMART_MODEL,
+                   ModelType.LEG_LH,
+                   ModelType.AEG_LH]
+model_parameters_list = [{},
+                         {},
+                         {},
+                         {},
+                         {},
+                         {"lambda_handle": .5, "beta_handle": 15},
+                         {"lambda_handle": .5, "beta_handle": .2}]
+
+convergences, rewards, fr_metrics, regret = average_over_seeds(model_type_list, model_parameters_list)
+vis.plot_average_over_seeds(convergences, rewards, fr_metrics, regret, "smart model comparison")
