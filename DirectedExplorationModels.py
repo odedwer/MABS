@@ -43,7 +43,7 @@ class UCBEntropyGainPlusModel(UCBNormalModel):
         super().update(chosen_machines, outcomes)
         # add entropy gain for all machines
         self.estimated_machine_ucb *= (1 - self.beta_handle)
-        self.estimated_machine_ucb += self.beta_handle * (self._get_estimated_entropy_gain()[:, np.newaxis])
+        self.estimated_machine_ucb += self.beta_handle * (self._get_estimated_entropy_gain())
 
 
 class UCBEntropyGainModel(UCBNormalModel):
@@ -60,4 +60,4 @@ class UCBEntropyGainModel(UCBNormalModel):
         super().update(chosen_machines, outcomes)
         # add entropy gain for all machines
         self.estimated_machine_ucb /= -np.log(
-            (10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()[:, np.newaxis])
+            (10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain())

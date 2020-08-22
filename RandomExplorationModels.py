@@ -35,7 +35,7 @@ class ThompsonEntropyGainModel(ThompsonNormalModel):
 
     def choose_machines(self, get_estimates=False):
         estimated_rewards = super().choose_machines(True)
-        estimated_rewards /= (-np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()))[:, np.newaxis]
+        estimated_rewards /= (-np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()))
         return estimated_rewards if get_estimates else super()._get_top_k(estimated_rewards)
 
 

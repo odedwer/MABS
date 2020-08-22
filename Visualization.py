@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
 from mpl_toolkits.mplot3d.axes3d import Axes3D
+from os.path import join
 
 SIMULATION = "s"
 DATA = "d"
@@ -15,11 +16,16 @@ from matplotlib.font_manager import FontProperties
 fontP = FontProperties()
 
 
-def plot_average_over_seeds(convergences, rewards, fr_metrics, regrets):
-    plot_convergences(convergences, DATA)
-    plot_rewards(rewards, DATA)
-    plot_distance_of_distribution_estimations(fr_metrics, DATA)
-    plot_regret(regrets)
+def plot_average_over_seeds(convergences, rewards, fr_metrics, regrets, title=None):
+    fig1 = plot_convergences(convergences, DATA)
+    fig2 = plot_rewards(rewards, DATA)
+    fig3 = plot_distance_of_distribution_estimations(fr_metrics, DATA)
+    fig4 = plot_regret(regrets)
+    if title:
+        fig1.savefig(join("figures", title) + " ROC.png")
+        fig2.savefig(join("figures", title) + " rewards.png")
+        fig3.savefig(join("figures", title) + " FR.png")
+        fig4.savefig(join("figures", title) + " regret.png")
 
 
 def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.Figure:
@@ -38,7 +44,7 @@ def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.F
     ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
         ax.plot(sim.get_convergence_rate(window_size) if list_type == SIMULATION else sim[1],
-                label=sim.type if list_type == SIMULATION else sim[0], linewidth=3)
+                label=sim.type if list_type == SIMULATION else sim[0])
     ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Machine switch rate")
     ax.set_xlabel(r"Trial")
