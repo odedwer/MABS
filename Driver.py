@@ -124,8 +124,8 @@ lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics, lambda_be
 vis.plot_average_over_seeds(lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics, lambda_beta_regret)
 
 # %% beta-lambda heatmap comparison
-model_type_list = [ModelType.OPTIMAL_MODEL] + [ModelType.LAMBDA_BETA for i in range(25)]
-lambda_list = np.arange(0, 1, 2e-1)
+model_type_list = [ModelType.OPTIMAL_MODEL] + [ModelType.LAMBDA_BETA for i in range(100)]
+lambda_list = np.linspace(0, 1, 10)
 beta_list = np.linspace(1e-1, 100, lambda_list.size)
 # beta_list = lambda_list.copy()
 model_parameters_list = [{}] + [{"lambda_handle": i, "beta_handle": j} for i in lambda_list for j
@@ -133,10 +133,10 @@ model_parameters_list = [{}] + [{"lambda_handle": i, "beta_handle": j} for i in 
 lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics, lambda_beta_regret = average_over_seeds(
     model_type_list,
     model_parameters_list)
+#%%
+vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_rewards[1:],title="Reward Slope")
 # %%
-
-# %%
-vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_regret[1:])
+vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_regret[1:],title="Regret Slope")
 
 # %%# %% lambda beta model comparisons
 model_type_list = [ModelType.OPTIMAL_MODEL,
@@ -177,3 +177,19 @@ Which comparisons should we make - all comparisons include entropyGain + optimal
 
  * 
 """
+# %%
+model_type_list = [ModelType.OPTIMAL_MODEL,
+                   ModelType.UCB_NORMAL,
+                   ModelType.ENTROPY_GAIN_MODEL,
+                   ModelType.BETA_STOCHASTIC,
+                   ModelType.BETA_STOCHASTIC_UPDATE]
+model_parameters_list = [{},
+                         {},
+                         {},
+                         {"beta_handle": 0.4, "theta": 0.5},
+                         {"beta_handle": 0.4, "theta": 0.2, "learning_rate": .01}]
+lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret = average_over_seeds(model_type_list,
+                                                                                           model_parameters_list)
+vis.plot_average_over_seeds(lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret)
+
+

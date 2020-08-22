@@ -31,7 +31,11 @@ class ModelType(Enum):
     BETA_UBC_BASED_THOMPSON_PLUS = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaPlusModel)
 
     STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBModel)
+    STOCHASTIC_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateModel)
     BETA_STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaModel)
+    BETA_STOCHASTIC_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaModel)
+    BETA_STOCHASTIC_PLUS = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaPlusModel)
+    BETA_STOCHASTIC_PLUS_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaPlusModel)
 
     UCB_NORMAL = ConstructorWrapper(DirectedExplorationModels.UCBNormalModel)
     UCB_ENTROPY_GAIN = ConstructorWrapper(DirectedExplorationModels.UCBEntropyGainModel)

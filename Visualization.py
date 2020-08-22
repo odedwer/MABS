@@ -37,7 +37,7 @@ def plot_convergences(simulation_list, list_type="s", window_size=None) -> plt.F
     fontP.set_size('small' if len(simulation_list) > 5 else 'medium')
     ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
-        ax.plot(sim.get_convergence_rate(window_size) if list_type == SIMULATION else sim[1], ':',
+        ax.plot(sim.get_convergence_rate(window_size) if list_type == SIMULATION else sim[1],
                 label=sim.type if list_type == SIMULATION else sim[0], linewidth=3)
     ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Machine switch rate")
@@ -60,7 +60,7 @@ def plot_rewards(simulation_list, list_type="s") -> plt.Figure:
     ax = fig.subplots()
     ax.set_prop_cycle(plt.cycler('color', colormap(np.linspace(0, 1, len(simulation_list)))))
     for sim in simulation_list:
-        ax.plot(sim.get_reward_sum() if list_type == SIMULATION else sim[1], linestyle=":",
+        ax.plot(sim.get_reward_sum() if list_type == SIMULATION else sim[1],
                 label=sim.type if list_type == SIMULATION else sim[0])
     ax.legend(prop=fontP, framealpha=FRAME_ALPHA)
     ax.set_title("Cumulative Reward")
@@ -94,7 +94,7 @@ def plot_regret(regret_list) -> plt.Figure:
     return fig
 
 
-def plot_lambda_beta_surface(beta_list, lambda_list, data_list):
+def plot_lambda_beta_surface(beta_list, lambda_list, data_list, title=None):
     data_list = [d[1] for d in data_list]
     fig = plt.figure()
     slopes = np.zeros(len(data_list))
@@ -107,6 +107,9 @@ def plot_lambda_beta_surface(beta_list, lambda_list, data_list):
     slopes = slopes.reshape((len(beta_list), len(lambda_list)), order='F')
     x, y = np.meshgrid(lambda_list, beta_list)
     ax.plot_surface(x, y, slopes, cmap=plt.cm.coolwarm, alpha=0.6)
+    if title is not None:
+        fig.suptitle(title)
+    return fig
 
 
 def fix_sig(sig):
@@ -149,7 +152,7 @@ def plot_distance_of_distribution_estimations(sim_list, list_type="s"):
                                          sim.model.estimated_machine_reward_distribution[i, :])
         else:
             distances = sim[1]
-        axs[j].hist(distances, label=sim.type if list_type == SIMULATION else sim[0], linestyle=":", alpha=.3,
+        axs[j].hist(distances, label=sim.type if list_type == SIMULATION else sim[0], alpha=.3,
                     bins=np.arange(0, 1.025, 0.025), density=True)
         axs[j].text(0.6, 0.9, "mean: %.3f\nSD: %.3f" % (np.mean(distances), np.std(distances)),
                     transform=axs[j].transAxes)

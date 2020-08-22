@@ -163,7 +163,7 @@ class UCBBasedThompsonBetaPlusModel(UCBBasedThompsonModel):
 
 class StochasticThompsonUCBModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
-                 learning_rate=1e-4):
+                 learning_rate=.01):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         # ucb = 1, thompson = 0
         self.theta = theta
@@ -173,7 +173,7 @@ class StochasticThompsonUCBModel(BaseModel):
 
     @property
     def model_name(self):
-        return r"UCB & Thompson, stochastic with $\theta=%.2f$" % self.theta
+        return r"SH with $\theta=%.2f$" % self.theta
 
     def choose_machines(self, get_estimates=False):
         return self.ucb.choose_machines(get_estimates) if \
@@ -183,14 +183,61 @@ class StochasticThompsonUCBModel(BaseModel):
         super().update(chosen_machines, outcomes)
         self.ucb.update(chosen_machines, outcomes)
         self.thompson.update(chosen_machines, outcomes)
-        self.theta += self.theta * self.learning_rate
+
+
+class StochasticThompsonUCBUpdateModel(StochasticThompsonUCBModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 learning_rate=.01):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, learning_rate)
+
+    @property
+    def model_name(self):
+        return r"USH $\theta=%.2f$" % self.theta
+
+    def update(self, chosen_machines, outcomes):
+        super().update(chosen_machines, outcomes)
+        self.theta *= (1 + self.learning_rate)
         if self.theta > 1:
             self.theta = 1
 
 
 class StochasticThompsonUCBBetaModel(StochasticThompsonUCBModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
-                 beta_handle: float, learning_rate=1e-4):
+                 beta_handle: float):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta)
+        self.beta_handle = beta_handle
+
+    def choose_machines(self, get_estimates=False):
+        thompson_ucb_estimates = super().choose_machines(True)
+        cur_estimates = thompson_ucb_estimates / (
+            -np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()))
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return r"LEG-SH $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
+
+
+class StochasticThompsonUCBBetaPlusModel(StochasticThompsonUCBModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 beta_handle: float):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta)
+        self.beta_handle = beta_handle
+
+    def choose_machines(self, get_estimates=False):
+        thompson_ucb_estimates = super().choose_machines(True)
+        cur_estimates = (1 - self.beta_handle) * thompson_ucb_estimates + (
+                self.beta_handle * self._get_estimated_entropy_gain())
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return r"AEG-SH $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
+
+
+class StochasticThompsonUCBUpdateBetaModel(StochasticThompsonUCBUpdateModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 beta_handle: float, learning_rate=.01):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, learning_rate)
         self.beta_handle = beta_handle
 
@@ -202,13 +249,13 @@ class StochasticThompsonUCBBetaModel(StochasticThompsonUCBModel):
 
     @property
     def model_name(self):
-        return r"UCB & Thompson stochastic, Entropy gain $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
+        return r"LEG-USH $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
 
 
-class StochasticThompsonUCBBetaPlusModel(StochasticThompsonUCBModel):
+class StochasticThompsonUCBUpdateBetaPlusModel(StochasticThompsonUCBUpdateModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
-                 beta_handle: float, learning_rate=1e-4):
-        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, learning_rate=1e-4)
+                 beta_handle: float, learning_rate=.01):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, learning_rate)
         self.beta_handle = beta_handle
 
     def choose_machines(self, get_estimates=False):
@@ -219,7 +266,7 @@ class StochasticThompsonUCBBetaPlusModel(StochasticThompsonUCBModel):
 
     @property
     def model_name(self):
-        return r"UCB & Thompson stochastic, Entropy gain $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
+        return r"AEG-USH $\theta=%.2f, \beta=%.2f$" % (self.theta, self.beta_handle)
 
 
 ############################################################################################
@@ -237,6 +284,10 @@ class LambdaBetaPlusNormalizedNoiseModel(LambdaBetaModelPlusNormalized):
         cur_estimates = super().choose_machines(True) + self.noise()
         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
 
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
 
 class LambdaBetaNoiseModel(LambdaBetaModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
@@ -248,13 +299,66 @@ class LambdaBetaNoiseModel(LambdaBetaModel):
         cur_estimates = super().choose_machines(True) + self.noise()
         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
 
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
 
 class StochasticThompsonUCBBetaNoiseModel(StochasticThompsonUCBBetaModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
-                 beta_handle: float, learning_rate=1e-4, noise_sigma=None):
+                 beta_handle: float, noise_sigma=None):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, beta_handle)
         self.noise = lambda: np.random.normal(0, noise_sigma if noise_sigma else 1, self.machines.size)
 
     def choose_machines(self, get_estimates=False):
         cur_estimates = super().choose_machines(True) + self.noise()
         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
+
+class StochasticThompsonUCBUpdateBetaNoiseModel(StochasticThompsonUCBUpdateBetaModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 beta_handle: float, learning_rate=.01, noise_sigma=None):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, beta_handle, learning_rate)
+        self.noise = lambda: np.random.normal(0, noise_sigma if noise_sigma else 1, self.machines.size)
+
+    def choose_machines(self, get_estimates=False):
+        cur_estimates = super().choose_machines(True) + self.noise()
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
+
+class StochasticThompsonUCBBetaPlusNoiseModel(StochasticThompsonUCBBetaPlusModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 beta_handle: float, noise_sigma=None):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, beta_handle)
+        self.noise = lambda: np.random.normal(0, noise_sigma if noise_sigma else 1, self.machines.size)
+
+    def choose_machines(self, get_estimates=False):
+        cur_estimates = super().choose_machines(True) + self.noise()
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
+
+class StochasticThompsonUCBUpdateBetaPlusNoiseModel(StochasticThompsonUCBUpdateBetaPlusModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, theta: float,
+                 beta_handle: float, learning_rate=.01, noise_sigma=None):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, theta, beta_handle, learning_rate)
+        self.noise = lambda: np.random.normal(0, noise_sigma if noise_sigma else 1, self.machines.size)
+
+    def choose_machines(self, get_estimates=False):
+        cur_estimates = super().choose_machines(True) + self.noise()
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
