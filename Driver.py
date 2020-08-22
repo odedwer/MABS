@@ -3,6 +3,14 @@ from tqdm import tqdm
 import Visualization as vis
 from ModelFactory import ModelType
 from Simulation import Simulation
+from importlib import reload
+
+
+def reload_imports():
+    reload(vis)
+    reload(ModelType)
+    reload(Simulation)
+
 
 # %%
 MIN_SEED = 1
@@ -133,10 +141,10 @@ model_parameters_list = [{}] + [{"lambda_handle": i, "beta_handle": j} for i in 
 lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics, lambda_beta_regret = average_over_seeds(
     model_type_list,
     model_parameters_list)
-#%%
-vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_rewards[1:],title="Reward Slope")
 # %%
-vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_regret[1:],title="Regret Slope")
+vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_rewards[1:], title="Reward Slope")
+# %%
+vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_regret[1:], title="Regret Slope")
 
 # %%# %% lambda beta model comparisons
 model_type_list = [ModelType.OPTIMAL_BASELINE,
@@ -191,5 +199,3 @@ model_parameters_list = [{},
 lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret = average_over_seeds(model_type_list,
                                                                                            model_parameters_list)
 vis.plot_average_over_seeds(lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret)
-
-
