@@ -19,11 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="Refactoring of hybrid models - adding update and non-update stochastic models">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaseModel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DirectedExplorationModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/DirectedExplorationModels.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RandomExplorationModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomExplorationModels.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +133,7 @@
       <workItem from="1597940553905" duration="12586000" />
       <workItem from="1598001136805" duration="2187000" />
       <workItem from="1598026005869" duration="9778000" />
-      <workItem from="1598075325067" duration="5717000" />
+      <workItem from="1598075325067" duration="6480000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -214,7 +212,14 @@
       <option name="project" value="LOCAL" />
       <updated>1598078944153</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine">
+      <created>1598081150938</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1598081150938</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,7 +249,8 @@
     <MESSAGE value="changed name in LambdaBetaModelPlusNormalized&#10;some name changes in surface plot&#10;fixed regret to be averaged over seeds" />
     <MESSAGE value="added beta handle to UCBEntropy" />
     <MESSAGE value="Refactoring of hybrid models - adding update and non-update stochastic models" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring of hybrid models - adding update and non-update stochastic models" />
+    <MESSAGE value="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine" />
+    <option name="LAST_COMMIT_MESSAGE" value="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598076913989">
