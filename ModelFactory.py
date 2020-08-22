@@ -17,33 +17,38 @@ class ModelType(Enum):
         def __call__(self, *args, **kwargs):
             return self.f(*args, **kwargs)
 
-    IN_ALGORITHMS_LAMBDA = None
-    IN_ALGORITHMS_UBC_BASED_THOMPSON = None
-    IN_ALGORITHMS_STOCHASTIC = None
+    LH = ConstructorWrapper(HybridModels.LambdaModel)
+    LEG_LH = ConstructorWrapper(HybridModels.LambdaBetaModel)
+    AEG_LH = ConstructorWrapper(HybridModels.LambdaBetaPlusModel)
+    NOAEG_LH = ConstructorWrapper(HybridModels.LambdaBetaModelPlusNormalized)
 
-    LAMBDA = ConstructorWrapper(HybridModels.LambdaModel)
-    LAMBDA_BETA = ConstructorWrapper(HybridModels.LambdaBetaModel)
-    LAMBDA_BETA_PLUS = ConstructorWrapper(HybridModels.LambdaBetaModelPlus)
-    LAMBDA_BETA_PLUS_NORMALIZED = ConstructorWrapper(HybridModels.LambdaBetaModelPlusNormalized)
+    # UCB_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonModel)
+    # BETA_UBC_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaModel)
+    # BETA_UBC_BASED_THOMPSON_PLUS = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaPlusModel)
 
-    UCB_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonModel)
-    BETA_UBC_BASED_THOMPSON = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaModel)
-    BETA_UBC_BASED_THOMPSON_PLUS = ConstructorWrapper(HybridModels.UCBBasedThompsonBetaPlusModel)
+    BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBModel)
+    UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateModel)
+    LEG_BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaModel)
+    LEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaModel)
+    AEG_BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaPlusModel)
+    AEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaPlusModel)
 
-    STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBModel)
-    STOCHASTIC_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateModel)
-    BETA_STOCHASTIC = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaModel)
-    BETA_STOCHASTIC_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaModel)
-    BETA_STOCHASTIC_PLUS = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaPlusModel)
-    BETA_STOCHASTIC_PLUS_UPDATE = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaPlusModel)
+    UCB = ConstructorWrapper(DirectedExplorationModels.UCBNormalModel)
+    LEG_UCB = ConstructorWrapper(DirectedExplorationModels.UCBEntropyGainModel)
+    AEG_UCB = ConstructorWrapper(DirectedExplorationModels.UCBEntropyGainPlusModel)
+    # UCB_ENTROPY_NORMALIZED = ConstructorWrapper(DirectedExplorationModels.UCBEntropyNormalizedModel)
 
-    UCB_NORMAL = ConstructorWrapper(DirectedExplorationModels.UCBNormalModel)
-    UCB_ENTROPY_GAIN = ConstructorWrapper(DirectedExplorationModels.UCBEntropyGainModel)
-    UCB_ENTROPY_NORMALIZED = ConstructorWrapper(DirectedExplorationModels.UCBEntropyNormalizedModel)
+    TS = ConstructorWrapper(RandomExplorationModels.ThompsonNormalModel)
+    LEG_TS = ConstructorWrapper(RandomExplorationModels.ThompsonEntropyGainModel)
+    AEG_TS = ConstructorWrapper(RandomExplorationModels.ThompsonEntropyGainPlusModel)
 
-    THOMPSON_NORMAL = ConstructorWrapper(RandomExplorationModels.ThompsonNormalModel)
-    THOMPSON_ENTROPY = ConstructorWrapper(RandomExplorationModels.ThompsonEntropyGainModel)
+    RANDOM_BASELINE = ConstructorWrapper(BaselineModels.RandomModel)
+    EG_BASELINE = ConstructorWrapper(BaselineModels.EntropyGainModel)
+    OPTIMAL_BASELINE = ConstructorWrapper(BaselineModels.OptimalModel)
 
-    BASELINE_MODEL = ConstructorWrapper(BaselineModels.RandomModel)
-    ENTROPY_GAIN_MODEL = ConstructorWrapper(BaselineModels.EntropyGainModel)
-    OPTIMAL_MODEL = ConstructorWrapper(BaselineModels.OptimalModel)
+    NLEG_LH = ConstructorWrapper(HybridModels.LambdaBetaNoiseModel)
+    NAEG_LH = ConstructorWrapper(HybridModels.LambdaBetaPlusNoiseModel)
+    NLEG_BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaNoiseModel)
+    NLEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaNoiseModel)
+    NAEG_BH = ConstructorWrapper(HybridModels.StochasticThompsonUCBBetaPlusNoiseModel)
+    NAEG_UBH = ConstructorWrapper(HybridModels.StochasticThompsonUCBUpdateBetaPlusNoiseModel)

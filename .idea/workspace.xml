@@ -19,9 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="fixed thompson sampling for LEG and AEG entropy incorporation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomExplorationModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomExplorationModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HybridModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModelFactory.py" beforeDir="false" afterPath="$PROJECT_DIR$/ModelFactory.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +135,7 @@
       <workItem from="1597940553905" duration="12586000" />
       <workItem from="1598001136805" duration="2187000" />
       <workItem from="1598026005869" duration="9778000" />
-      <workItem from="1598075325067" duration="6480000" />
+      <workItem from="1598075325067" duration="7538000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -219,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1598081150938</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="fixed thompson sampling for LEG and AEG entropy incorporation.">
+      <created>1598081993408</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1598081993408</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -250,7 +259,8 @@
     <MESSAGE value="added beta handle to UCBEntropy" />
     <MESSAGE value="Refactoring of hybrid models - adding update and non-update stochastic models" />
     <MESSAGE value="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine" />
-    <option name="LAST_COMMIT_MESSAGE" value="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine" />
+    <MESSAGE value="fixed thompson sampling for LEG and AEG entropy incorporation." />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed thompson sampling for LEG and AEG entropy incorporation." />
   </component>
   <component name="WindowStateProjectService">
     <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598076913989">

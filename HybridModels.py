@@ -18,7 +18,7 @@ class LambdaModel(BaseModel):
 
     @property
     def model_name(self):
-        return r"TS & UCB1, $\lambda=%.2f$" % self.lambda_handle
+        return r"LH, $\lambda=%.2f$" % self.lambda_handle
 
     def choose_machines(self, get_estimates=False):
         thompson_estimates = self.thompson.choose_machines(True)
@@ -33,7 +33,6 @@ class LambdaModel(BaseModel):
 
 
 class LambdaBetaModel(LambdaModel):
-
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
                  beta_handle: float):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle)
@@ -41,7 +40,7 @@ class LambdaBetaModel(LambdaModel):
 
     @property
     def model_name(self):
-        return r"TS, UCB1 & Entropy, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
+        return r"LEG-LH, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
 
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
@@ -49,8 +48,7 @@ class LambdaBetaModel(LambdaModel):
         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
 
 
-class LambdaBetaModelPlus(LambdaModel):
-
+class LambdaBetaPlusModel(LambdaModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
                  beta_handle: float):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle)
@@ -58,7 +56,7 @@ class LambdaBetaModelPlus(LambdaModel):
 
     @property
     def model_name(self):
-        return r"TS, UCB1 + Entropy, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
+        return r"AEG-LH, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
 
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
@@ -76,7 +74,7 @@ class LambdaBetaModelPlusNormalized(LambdaModel):
 
     @property
     def model_name(self):
-        return r"TS, UCB1 + Entropy normalized, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
+        return r"normalized AEG-LH, $\lambda=%.2f, \beta=%.2f$" % (self.lambda_handle, self.beta_handle)
 
     def choose_machines(self, get_estimates=False):
         lambda_estimates = super().choose_machines(True)
@@ -93,65 +91,65 @@ class LambdaBetaModelPlusNormalized(LambdaModel):
 ############################################################################################
 ############################################################################################
 
-class UCBBasedThompsonModel(ThompsonNormalModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
-        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
-        self.estimated_machine_ucb = np.zeros_like(self.machines)
-        self.num_of_plays = 0
-
-    @property
-    def model_name(self):
-        return r"UCB Based Thompson"
-
-    def choose_machines(self, get_estimates=False):
-        thompson_estimates = super().choose_machines(True)
-        cur_estimates = thompson_estimates + self.estimated_machine_ucb
-        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
-
-    def update(self, chosen_machines, outcomes):
-        self.num_of_plays += self.K
-        for machine_index, machine in enumerate(self.machines):
-            # update UCB of all machines
-            self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
-        super().update(chosen_machines, outcomes)
-
-    def _get_ucb(self, machine):
-        confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays
-        if confidence == -np.inf or confidence == np.NaN or confidence < 0:  # in case of division by 0
-            confidence = 0
-        return machine.get_mean_reward() + confidence
-
-
-class UCBBasedThompsonBetaModel(UCBBasedThompsonModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle: float):
-        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
-        self.beta_handle = beta_handle
-
-    def choose_machines(self, get_estimates=False):
-        thompson_UCB_estimates = super().choose_machines(True)
-        cur_estimates = thompson_UCB_estimates / (
-            -np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()))
-        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
-
-    @property
-    def model_name(self):
-        return r"UCB based Thompson, $\beta=%.2f$" % self.beta_handle
-
-
-class UCBBasedThompsonBetaPlusModel(UCBBasedThompsonModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle: float):
-        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
-        self.beta_handle = beta_handle
-
-    def choose_machines(self, get_estimates=False):
-        thompson_UCB_estimates = super().choose_machines(True)
-        cur_estimates = (1 - self.beta_handle) * thompson_UCB_estimates + (
-                self.beta_handle * self._get_estimated_entropy_gain())
-        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
-
-    @property
-    def model_name(self):
-        return r"UCB based Thompson, $\beta=%.2f$" % self.beta_handle
+# class UCBBasedThompsonModel(ThompsonNormalModel):
+#     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+#         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+#         self.estimated_machine_ucb = np.zeros_like(self.machines)
+#         self.num_of_plays = 0
+#
+#     @property
+#     def model_name(self):
+#         return r"UCB Based Thompson"
+#
+#     def choose_machines(self, get_estimates=False):
+#         thompson_estimates = super().choose_machines(True)
+#         cur_estimates = thompson_estimates + self.estimated_machine_ucb
+#         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+#
+#     def update(self, chosen_machines, outcomes):
+#         self.num_of_plays += self.K
+#         for machine_index, machine in enumerate(self.machines):
+#             # update UCB of all machines
+#             self.estimated_machine_ucb[machine_index] = self._get_ucb(machine)
+#         super().update(chosen_machines, outcomes)
+#
+#     def _get_ucb(self, machine):
+#         confidence = (2 * np.log(self.num_of_plays)) / machine.num_of_plays
+#         if confidence == -np.inf or confidence == np.NaN or confidence < 0:  # in case of division by 0
+#             confidence = 0
+#         return machine.get_mean_reward() + confidence
+#
+#
+# class UCBBasedThompsonBetaModel(UCBBasedThompsonModel):
+#     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle: float):
+#         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+#         self.beta_handle = beta_handle
+#
+#     def choose_machines(self, get_estimates=False):
+#         thompson_UCB_estimates = super().choose_machines(True)
+#         cur_estimates = thompson_UCB_estimates / (
+#             -np.log((10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain()))
+#         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+#
+#     @property
+#     def model_name(self):
+#         return r"UCB based Thompson, $\beta=%.2f$" % self.beta_handle
+#
+#
+# class UCBBasedThompsonBetaPlusModel(UCBBasedThompsonModel):
+#     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle: float):
+#         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+#         self.beta_handle = beta_handle
+#
+#     def choose_machines(self, get_estimates=False):
+#         thompson_UCB_estimates = super().choose_machines(True)
+#         cur_estimates = (1 - self.beta_handle) * thompson_UCB_estimates + (
+#                 self.beta_handle * self._get_estimated_entropy_gain())
+#         return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+#
+#     @property
+#     def model_name(self):
+#         return r"UCB based Thompson, $\beta=%.2f$" % self.beta_handle
 
 
 ############################################################################################
@@ -290,6 +288,21 @@ class LambdaBetaPlusNormalizedNoiseModel(LambdaBetaModelPlusNormalized):
 
 
 class LambdaBetaNoiseModel(LambdaBetaModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
+                 beta_handle: float, noise_sigma):
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle, beta_handle)
+        self.noise = lambda: np.random.normal(0, noise_sigma, self.machines.size)
+
+    def choose_machines(self, get_estimates=False):
+        cur_estimates = super().choose_machines(True) + self.noise()
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    @property
+    def model_name(self):
+        return "Noisy " + super().model_name
+
+
+class LambdaBetaPlusNoiseModel(LambdaBetaPlusModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, lambda_handle: float,
                  beta_handle: float, noise_sigma):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards, lambda_handle, beta_handle)
