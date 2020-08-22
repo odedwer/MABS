@@ -19,8 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="All models should now work with different reward probability functions and different rewards.&#10;Names were changed to match the naming convention in the document.&#10;ModelFactory.py was updated with noise models, unused models are commented out">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="added reload_imports function for easier interactive testing">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BaseModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/BaseModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Simulation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +65,6 @@
       <module name="ComDePriProjectSimulations" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -132,7 +132,7 @@
       <workItem from="1597940553905" duration="12586000" />
       <workItem from="1598001136805" duration="2187000" />
       <workItem from="1598026005869" duration="9778000" />
-      <workItem from="1598075325067" duration="7916000" />
+      <workItem from="1598075325067" duration="14166000" />
     </task>
     <task id="LOCAL-00001" summary="not sure what is the difference">
       <created>1596558012946</created>
@@ -232,7 +232,14 @@
       <option name="project" value="LOCAL" />
       <updated>1598083186572</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="added reload_imports function for easier interactive testing">
+      <created>1598083323308</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1598083323308</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,7 +272,8 @@
     <MESSAGE value="added different rewards possibility to Simulation.py&#10;Fixed entropyUCB implementation - was not calculating entropy as we wanted.&#10;Added LEG-UCB implementation&#10;All UCB now compliant with different rewards per machine" />
     <MESSAGE value="fixed thompson sampling for LEG and AEG entropy incorporation." />
     <MESSAGE value="All models should now work with different reward probability functions and different rewards.&#10;Names were changed to match the naming convention in the document.&#10;ModelFactory.py was updated with noise models, unused models are commented out" />
-    <option name="LAST_COMMIT_MESSAGE" value="All models should now work with different reward probability functions and different rewards.&#10;Names were changed to match the naming convention in the document.&#10;ModelFactory.py was updated with noise models, unused models are commented out" />
+    <MESSAGE value="added reload_imports function for easier interactive testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="added reload_imports function for easier interactive testing" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598076913989">
@@ -281,44 +289,52 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="782" y="312" width="424" height="496" key="FileChooserDialogImpl/72.27.1848.1053@72.27.1848.1053" timestamp="1595482151596" />
-    <state width="1874" height="350" key="GridCell.Tab.0.bottom" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.0.bottom" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.0.bottom/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.0.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.0.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
-    <state width="1874" height="350" key="GridCell.Tab.0.center" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.0.center" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.0.center/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.0.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.0.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
-    <state width="1874" height="350" key="GridCell.Tab.0.left" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.0.left" timestamp="1598089441652">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.0.left/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441652" />
     <state width="1874" height="350" key="GridCell.Tab.0.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.0.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
-    <state width="1874" height="350" key="GridCell.Tab.0.right" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.0.right" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.0.right/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.0.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.0.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059961" />
-    <state width="1874" height="350" key="GridCell.Tab.1.bottom" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.1.bottom" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.1.bottom/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.1.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
-    <state width="1874" height="350" key="GridCell.Tab.1.center" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.1.center" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.1.center/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.1.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
-    <state width="1874" height="350" key="GridCell.Tab.1.left" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.1.left" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.1.left/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.1.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
-    <state width="1874" height="350" key="GridCell.Tab.1.right" timestamp="1598030260622">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state width="1874" height="454" key="GridCell.Tab.1.right" timestamp="1598089441653">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state width="1874" height="454" key="GridCell.Tab.1.right/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598089441653" />
     <state width="1874" height="350" key="GridCell.Tab.1.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598030260622" />
     <state width="1802" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1597936059962" />
     <state x="666" y="223" width="578" height="640" key="RollbackChangesDialog" timestamp="1598026032418">
@@ -330,9 +346,10 @@
     </state>
     <state x="432" y="189" key="SettingsEditor/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598002156740" />
     <state x="488" y="189" width="1016" height="742" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1595482775371" />
-    <state x="591" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1598033968252">
-      <screen x="0" y="27" width="1920" height="1053" />
+    <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1598088061868">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state x="1992" y="309" key="Vcs.Push.Dialog.v2/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598088061868" />
     <state x="591" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598033968252" />
     <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596661793247" />
     <state width="960" height="542" key="XDebugger.FullValuePopup" timestamp="1598077382981">
@@ -357,15 +374,45 @@
     <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1595482292123" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/RandomExplorationModels.py</url>
+          <line>5</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/RandomExplorationModels.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BaseModel.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/DirectedExplorationModels.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="sim.results" language="Python" />
-        <watch expression="sim.type" language="Python" />
-        <watch expression="OptimalModel.model_name" language="Python" />
+        <watch expression="is_iterable(self.reward_probability_function)" language="Python" />
+        <watch expression="len(self.rewards.shape) &gt; 1" language="Python" />
+        <watch expression="self.rewards[i, :]" language="Python" />
+        <watch expression="self.reward_probability_function()" language="Python" />
+        <watch expression="self.machine_list[machine]" language="Python" />
+        <watch expression="self.machine_list[machine]" language="Python" />
+        <watch expression="outcomes" language="Python" />
+        <watch expression="self.rewards[chosen_machines]" language="Python" />
+        <watch expression="super()._get_top_k(self.estimated_machine_ucb)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1598030234549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1598089301164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

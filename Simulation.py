@@ -45,13 +45,15 @@ class Simulation:
         """
         initializes the machines for the simulation
         """
-        if is_iterable(self.reward_probability_function):
-            if len(self.rewards.shape) > 1:
-                for i in range(self.N):
-                    self.machine_list[i] = Machine(self.rewards[i, :], self.reward_probability_function[i]())
-            else:
-                for i in range(self.N):
-                    self.machine_list[i] = Machine(self.rewards, self.reward_probability_function[i]())
+        if is_iterable(self.reward_probability_function) and len(self.rewards.shape) > 1:
+            for i in range(self.N):
+                self.machine_list[i] = Machine(self.rewards[i, :], self.reward_probability_function[i]())
+        elif is_iterable(self.reward_probability_function):
+            for i in range(self.N):
+                self.machine_list[i] = Machine(self.rewards, self.reward_probability_function[i]())
+        elif len(self.rewards.shape) > 1:
+            for i in range(self.N):
+                self.machine_list[i] = Machine(self.rewards[i, :], self.reward_probability_function())
         else:
             for i in range(self.N):
                 self.machine_list[i] = Machine(self.rewards, self.reward_probability_function())

@@ -2,29 +2,29 @@ import numpy as np
 from tqdm import tqdm
 import Visualization as vis
 from ModelFactory import ModelType
-from Simulation import Simulation
+import Simulation as s
 from importlib import reload
 
 
 def reload_imports():
     reload(vis)
-    reload(ModelType)
-    reload(Simulation)
+    reload(s)
 
 
 # %%
 MIN_SEED = 1
-MAX_SEED = 4
-N = 30
-K = 5
+MAX_SEED = 2
+N = 10
+K = 2
 T = 1000
-POSSIBLE_REWARDS = np.array([1, 5, 10, 40])
-get_reward_probabilities = lambda: np.random.dirichlet(np.arange(len(POSSIBLE_REWARDS), 0, -1) / len(POSSIBLE_REWARDS))
+POSSIBLE_REWARDS = np.asarray([[1, 4, 5, 40] for i in range(N)])
+get_reward_probabilities = lambda: np.random.dirichlet(
+    np.arange(POSSIBLE_REWARDS.shape[1], 0, -1) / POSSIBLE_REWARDS.shape[1])
 
 
 # %%
 def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, possible_rewards=POSSIBLE_REWARDS,
-                       get_reward_probabilities=lambda: np.random.dirichlet(np.ones_like(POSSIBLE_REWARDS)),
+                       get_reward_probabilities=get_reward_probabilities,
                        min_seed=MIN_SEED, max_seed=MAX_SEED):
     """
     run simulation for many models, with different seeds and return the required arrays for Visualization.py
@@ -52,7 +52,7 @@ def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, po
         for i, model_type, model_parameters in tqdm(zip(np.arange(len(model_type_list)), model_type_list,
                                                         model_parameters_list)):
             np.random.seed(seed)
-            sim = Simulation(n, k, t, possible_rewards, get_reward_probabilities, model_type, **model_parameters)
+            sim = s.Simulation(n, k, t, possible_rewards, get_reward_probabilities, model_type, **model_parameters)
             if seed == min_seed:
                 sim_titles.append(sim.type)
             sim.run_simulation()
@@ -77,16 +77,10 @@ def average_over_seeds(model_type_list, model_parameters_list, n=N, k=K, t=T, po
 # %% lambda comparison
 model_type_list = [ModelType.UCB,
                    ModelType.TS,
-                   ModelType.OPTIMAL_BASELINE,
-                   ModelType.LH,
-                   ModelType.LH,
-                   ModelType.LH]
+                   ModelType.OPTIMAL_BASELINE]
 model_parameters_list = [{},
                          {},
-                         {},
-                         {"lambda_handle": .1},
-                         {"lambda_handle": .5},
-                         {"lambda_handle": .9}]
+                         {}]
 lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret = average_over_seeds(model_type_list,
                                                                                            model_parameters_list)
 vis.plot_average_over_seeds(lambda_convergences, lambda_rewards, lambda_fr_metrics, lambda_regret)
