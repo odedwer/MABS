@@ -21,9 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="Fixed bugs and did some tests to make sure UCB and TS work the same with same and different possible rewards">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DirectedExplorationModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/DirectedExplorationModels.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RandomExplorationModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/RandomExplorationModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HybridModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModelFactory.py" beforeDir="false" afterPath="$PROJECT_DIR$/ModelFactory.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +55,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="ToolWindowCommit.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -66,6 +67,9 @@
       <module name="ComDePriProjectSimulations" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -285,10 +289,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Fixed bugs and did some tests to make sure UCB and TS work the same with same and different possible rewards" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598076913989">
+    <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598121120631">
       <screen x="0" y="27" width="3840" height="1053" />
     </state>
-    <state x="1992" y="292" key="#com.intellij.ide.util.MemberChooser/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598076913989" />
+    <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598121120631" />
     <state x="2724" y="272" width="374" height="569" key="#com.intellij.ide.util.MemberChooser/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596655628685" />
     <state x="1992" y="27" width="1061" height="1053" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1596654368808">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -361,13 +365,14 @@
     <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598094896322" />
     <state x="591" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598033968252" />
     <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596661793247" />
-    <state width="960" height="542" key="XDebugger.FullValuePopup" timestamp="1598077382981">
+    <state width="960" height="542" key="XDebugger.FullValuePopup" timestamp="1598119243338">
       <screen x="0" y="27" width="3840" height="1053" />
     </state>
-    <state width="960" height="542" key="XDebugger.FullValuePopup/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598077382981" />
-    <state x="2092" y="127" width="1648" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1596639708873">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="960" height="542" key="XDebugger.FullValuePopup/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598119243338" />
+    <state x="1211" y="248" width="1848" height="832" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1598112424314">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state x="1211" y="248" width="1848" height="832" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598112424314" />
     <state x="2092" y="127" width="1648" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596639708873" />
     <state x="2687" y="468" width="458" height="177" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1596558338043">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -377,9 +382,10 @@
       <screen x="72" y="27" width="1848" height="1053" />
     </state>
     <state x="710" y="243" width="567" height="624" key="git4idea.branch.GitSmartOperationDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1595482303189" />
-    <state x="659" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1595482292123">
-      <screen x="72" y="27" width="1848" height="1053" />
+    <state x="1220" y="255" width="1397" height="678" key="search.everywhere.popup" timestamp="1598116326282">
+      <screen x="0" y="27" width="3840" height="1053" />
     </state>
+    <state x="1220" y="255" width="1397" height="678" key="search.everywhere.popup/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598116326282" />
     <state x="659" y="255" width="672" height="678" key="search.everywhere.popup/72.27.1848.1053@72.27.1848.1053" timestamp="1595482292123" />
   </component>
   <component name="XDebuggerManager">
@@ -422,6 +428,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1598089301164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$gershman_data_comparisons.coverage" NAME="gershman_data_comparisons Coverage Results" MODIFIED="1598098876629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ComDePriProjectSimulations$Driver.coverage" NAME="Driver Coverage Results" MODIFIED="1598110888130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

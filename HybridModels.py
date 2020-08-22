@@ -375,3 +375,33 @@ class StochasticThompsonUCBUpdateBetaPlusNoiseModel(StochasticThompsonUCBUpdateB
     @property
     def model_name(self):
         return "Noisy " + super().model_name
+
+
+############################################################################################
+############################################################################################
+########################                noise Models                ########################
+############################################################################################
+############################################################################################
+class SmartModel(BaseModel):
+    @property
+    def model_name(self):
+        return r"LEG_UCB+AEG_TS, $\beta_{AEG}=%.2f, \beta_{LEG}=%.2f$" % (
+            self.ts_model.beta_handle, self.ucb_model.beta_handle)
+
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, leg_beta_handle=15,
+                 aeg_beta_handle=.5):
+        from ModelFactory import ModelType
+        super().__init__(machines, num_to_choose, num_trials, possible_rewards)
+        self.ucb_model = ModelType.LEG_UCB.value(machines, num_to_choose, num_trials, possible_rewards, leg_beta_handle)
+        self.ts_model = ModelType.AEG_TS.value(machines, num_to_choose, num_trials, possible_rewards, aeg_beta_handle)
+
+    def choose_machines(self, get_estimates=False):
+        ucb_estimates = self.ucb_model.choose_machines(True)
+        ts_estimates = self.ts_model.choose_machines(True)
+        cur_estimates = ucb_estimates + ts_estimates
+        return cur_estimates if get_estimates else super()._get_top_k(cur_estimates)
+
+    def update(self, chosen_machines, outcomes):
+        super().update(chosen_machines,outcomes)
+        self.ucb_model.update(chosen_machines, outcomes)
+        self.ts_model.update(chosen_machines, outcomes)
