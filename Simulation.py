@@ -5,6 +5,12 @@ import numpy as np
 
 from Machine import Machine
 
+from collections.abc import Iterable
+
+
+def is_iterable(obj):
+    return isinstance(obj, Iterable)
+
 
 class Simulation:
     def __init__(self, num_machines: int, num_to_choose: int, num_trials: int, possible_rewards,
@@ -39,8 +45,16 @@ class Simulation:
         """
         initializes the machines for the simulation
         """
-        for i in range(self.N):
-            self.machine_list[i] = Machine(self.rewards, self.reward_probability_function())
+        if is_iterable(self.reward_probability_function):
+            if len(self.rewards.shape) > 1:
+                for i in range(self.N):
+                    self.machine_list[i] = Machine(self.rewards[i, :], self.reward_probability_function[i]())
+            else:
+                for i in range(self.N):
+                    self.machine_list[i] = Machine(self.rewards, self.reward_probability_function[i]())
+        else:
+            for i in range(self.N):
+                self.machine_list[i] = Machine(self.rewards, self.reward_probability_function())
 
     def run_simulation(self):
         for t in range(self.T):
