@@ -1,5 +1,6 @@
 from BaseModel import *
 
+
 class UCBNormalModel(BaseModel):
     def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
@@ -28,59 +29,35 @@ class UCBNormalModel(BaseModel):
         return machine.get_mean_reward() + confidence
 
 
-class UCBEntropyGainModel(BaseModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+class UCBEntropyGainPlusModel(UCBNormalModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
-        self.machine_reward_counter = np.ones((self.N, self.rewards.size))
-        self.estimated_machine_reward_distribution = self.machine_reward_counter / self.rewards.size
-        self.estimated_machine_ucb = (self.estimated_machine_reward_distribution @ self.rewards) + (
-            self._get_estimated_entropy_gain()[:, np.newaxis])
+        self.beta_handle = beta_handle
 
     @property
     def model_name(self):
-        return "Entropy Driven UCB1"
-
-    def choose_machines(self, get_estimates=False) -> np.array:
-        # choose K machines with largest UCB
-        return self.estimated_machine_ucb if get_estimates else super()._get_top_k(self.estimated_machine_ucb)
+        return r"AEG-UCB1, $\beta=%.2f$" % self.beta_handle
 
     def update(self, chosen_machines, outcomes):
-        # update probabilities as simple frequency counters, where all counters are initialized at 1
-        # basically - this is the mode of the Dirichlet conjugate prior
+        # update machine ucb
         super().update(chosen_machines, outcomes)
-        # update mean reward of every chosen machine
-        for machine_index in chosen_machines:
-            self.estimated_machine_ucb[machine_index] = self.machines[machine_index].get_mean_reward()
-
-        # add entropy for all chosen machines - the higher the entropy, the higher our uncertainty
-        # so we are optimistic in the face of uncertainty
-        self.estimated_machine_ucb[chosen_machines] = (self.estimated_machine_reward_distribution[chosen_machines, :] @
-                                                       self.rewards) + self._get_estimated_entropy_gain()
+        # add entropy gain for all machines
+        self.estimated_machine_ucb *= (1 - self.beta_handle)
+        self.estimated_machine_ucb += self.beta_handle * (self._get_estimated_entropy_gain())
 
 
-class UCBEntropyNormalizedModel(BaseModel):
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards):
+class UCBEntropyGainModel(UCBNormalModel):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, beta_handle):
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
-        self.estimated_machine_expectancy = self.estimated_machine_reward_distribution @ self.rewards
-        self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
-        self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
+        self.beta_handle = beta_handle
 
     @property
     def model_name(self):
-        return "Normalized Entropy Driven UCB1"
-
-    def choose_machines(self, get_estimates=False) -> np.array:
-        cur_estimatess = self.estimated_machine_expectancy + self._get_estimated_entropy_gain()
-        return cur_estimatess if get_estimates else super()._get_top_k(cur_estimatess)
+        return r"LEG-UCB1, $\beta=%.2f$" % self.beta_handle
 
     def update(self, chosen_machines, outcomes):
-        # update probabilities as simple frequency counters, where all counters are initialized at 1
-        # basically - this is the mode of the Dirichlet conjugate prior
-
+        # update machine ucb
         super().update(chosen_machines, outcomes)
-        for machine_index in range(self.N):
-            self.estimated_machine_expectancy[machine_index] = self.machines[machine_index].get_mean_reward()
-        self.estimated_machine_expectancy /= np.max(self.estimated_machine_expectancy)
-
-        self.estimated_entropy = entropy(self.estimated_machine_reward_distribution, axis=1)
-        self.estimated_entropy /= np.max(self.estimated_entropy)
+        # add entropy gain for all machines
+        self.estimated_machine_ucb /= -np.log(
+            (10 ** (-self.beta_handle)) * self._get_estimated_entropy_gain())

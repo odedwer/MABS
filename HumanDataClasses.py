@@ -43,7 +43,7 @@ class TrialsBlock:
     def switch_vec(self):
         vec = []
         for i in range(len(self.trials) - 1):
-            vec.append(self.trials[i].machine_choice == self.trials[i + 1].machine_choice)
+            vec.append(self.trials[i].machine_choice != self.trials[i + 1].machine_choice)
         return np.array(vec)
 
     def cum_reward_vec(self):
