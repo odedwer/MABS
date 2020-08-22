@@ -19,12 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="Fixed bugs and did some tests to make sure UCB and TS work the same with same and different possible rewards">
+    <list default="true" id="808aa834-1190-4602-b180-d0f2bec8d0ed" name="Default Changelist" comment="fixed the bugs&#10;added smart model which beats them all!!!&#10;added plots to git">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HybridModels.py" beforeDir="false" afterPath="$PROJECT_DIR$/HybridModels.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModelFactory.py" beforeDir="false" afterPath="$PROJECT_DIR$/ModelFactory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,7 +248,14 @@
       <option name="project" value="LOCAL" />
       <updated>1598089835985</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="fixed the bugs&#10;added smart model which beats them all!!!&#10;added plots to git">
+      <created>1598122183078</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1598122183078</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,7 +290,8 @@
     <MESSAGE value="All models should now work with different reward probability functions and different rewards.&#10;Names were changed to match the naming convention in the document.&#10;ModelFactory.py was updated with noise models, unused models are commented out" />
     <MESSAGE value="added reload_imports function for easier interactive testing" />
     <MESSAGE value="Fixed bugs and did some tests to make sure UCB and TS work the same with same and different possible rewards" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed bugs and did some tests to make sure UCB and TS work the same with same and different possible rewards" />
+    <MESSAGE value="fixed the bugs&#10;added smart model which beats them all!!!&#10;added plots to git" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the bugs&#10;added smart model which beats them all!!!&#10;added plots to git" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1992" y="292" width="374" height="569" key="#com.intellij.ide.util.MemberChooser" timestamp="1598121120631">
@@ -359,10 +364,10 @@
     </state>
     <state x="432" y="189" key="SettingsEditor/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598002156740" />
     <state x="488" y="189" width="1016" height="742" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1595482775371" />
-    <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1598094896322">
+    <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1598122186716">
       <screen x="0" y="27" width="3840" height="1053" />
     </state>
-    <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598094896322" />
+    <state x="1992" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.3840.1053/3840.0.1920.1080@0.27.3840.1053" timestamp="1598122186716" />
     <state x="591" y="309" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@0.27.1920.1053" timestamp="1598033968252" />
     <state x="2511" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.1920.1080/3840.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1596661793247" />
     <state width="960" height="542" key="XDebugger.FullValuePopup" timestamp="1598119243338">

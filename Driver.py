@@ -11,7 +11,7 @@ def reload_imports():
     reload(s)
 
 
-MIN_SEED = 96
+MIN_SEED = 90
 MAX_SEED = 98
 N = 10
 K = 2
@@ -236,4 +236,6 @@ model_parameters_list = [{},
                          {"lambda_handle": .5, "beta_handle": .2}]
 
 convergences, rewards, fr_metrics, regret = average_over_seeds(model_type_list, model_parameters_list)
-vis.plot_average_over_seeds(convergences, rewards, fr_metrics, regret, "smart model comparison")
+#%%
+vis.plot_average_over_seeds(convergences, rewards, fr_metrics, regret)
+
