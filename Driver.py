@@ -12,9 +12,9 @@ def reload_imports():
 
 
 MIN_SEED = 90
-MAX_SEED = 98
-N = 10
-K = 2
+MAX_SEED = 99
+N = 20
+K = 1
 T = 10000
 POSSIBLE_REWARDS = np.asarray([5, 10, 20, 30, 50])
 get_reward_probabilities = lambda: np.random.dirichlet(np.ones_like(POSSIBLE_REWARDS))
@@ -128,6 +128,20 @@ convergences, rewards, fr_metrics, regret = average_over_seeds(
     model_parameters_list)
 vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_rewards[1:], title="Reward Slope")
 vis.plot_lambda_beta_surface(beta_list, lambda_list, lambda_beta_regret[1:], title="Regret Slope")
+# %%
+model_type_list = [ModelType.OPTIMAL_BASELINE] + [ModelType.SMART_MODEL for i in range(225)]
+aeg_beta_handle = np.linspace(0.1, 0.9, 15)
+leg_beta_handle = np.linspace(10, 40, aeg_beta_handle.size)
+# beta_list = lambda_list.copy()
+model_parameters_list = [{}] + [{"leg_beta_handle": i, "aeg_beta_handle": j} for i in leg_beta_handle for j
+                                in aeg_beta_handle]
+lambda_beta_convergences, lambda_beta_rewards, lambda_beta_fr_metrics, lambda_beta_regret = average_over_seeds(
+    model_type_list,
+    model_parameters_list)
+#%%
+vis.plot_lambda_beta_surface(leg_beta_handle, aeg_beta_handle, lambda_beta_rewards[1:], title="Reward Slope")
+#%%
+vis.plot_lambda_beta_surface(leg_beta_handle, aeg_beta_handle, lambda_beta_regret[1:], title="Regret Slope")
 
 # %% lambda hybrid comparisons
 model_type_list = [ModelType.OPTIMAL_BASELINE,

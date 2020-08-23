@@ -388,8 +388,8 @@ class SmartModel(BaseModel):
         return r"LEG_UCB+AEG_TS, $\beta_{AEG}=%.2f, \beta_{LEG}=%.2f$" % (
             self.ts_model.beta_handle, self.ucb_model.beta_handle)
 
-    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, leg_beta_handle=15,
-                 aeg_beta_handle=.5):
+    def __init__(self, machines, num_to_choose: int, num_trials: int, possible_rewards, leg_beta_handle=18,
+                 aeg_beta_handle=.37):
         from ModelFactory import ModelType
         super().__init__(machines, num_to_choose, num_trials, possible_rewards)
         self.ucb_model = ModelType.LEG_UCB.value(machines, num_to_choose, num_trials, possible_rewards, leg_beta_handle)
